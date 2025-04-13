@@ -160,4 +160,4 @@ npm start
 
 ---
 
-> Built for scale. Designed for clarity. Smartinbox-ready.
+> Built for scale. Designed for clarity.
