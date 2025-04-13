@@ -19,6 +19,8 @@ import "../events/listeners/admin.listener";
 import userRoutes from "./api/user.routes";
 import healthRoutes from "./api/health.routes";
 import docsRoutes from "./api/docs.routes";
+import bullBoardRoutes from "./api/bull.routes";
+
 
 export const startServer = async () => {
   const app = express();
@@ -47,6 +49,7 @@ export const startServer = async () => {
   // User routes
   app.use("/api", userRoutes);
   app.use("/api/docs", docsRoutes);
+  app.use("/api/admin/queues", bullBoardRoutes);
 
   // Error handler
   app.use(errorHandler);
