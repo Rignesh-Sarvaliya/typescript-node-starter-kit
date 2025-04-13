@@ -1,0 +1,44 @@
+# Node.js
+node_modules/
+dist/
+*.log
+
+# Env config
+.env
+.env.*.local
+.env.test
+.env.production
+
+# Prisma
+prisma/dev.db
+prisma/test.db
+prisma/migrations/
+
+# Docker
+docker-compose.override.yml
+start.sh
+
+# VSCode / Editor
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Coverage / Testing
+coverage/
+*.lcov
+jest-cache/
+.cache/
+
+# Build tools
+build/
+tmp/
+*.tsbuildinfo
+
+# Swagger output (if auto-generated)
+swagger.json
+swagger.yaml
