@@ -1,0 +1,17 @@
+---
+title: Set up CI
+body: |
+  We need GitHub Actions to run tests on every pull request.
+  This should cover:
+    - Install dependencies
+    - Run eslint
+    - Run unit tests
+---
+title: Create CONTRIBUTING.md
+body: |
+  Document coding standards, branch strategy, and review process so contributors know what to expect.
+---
+title: Add Dockerfile
+body: |
+  Ship the app in a container for consistent local and production environments.
+  Ensure the image is as small as possible by using multi-stage builds.
