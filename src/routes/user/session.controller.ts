@@ -7,7 +7,8 @@ import { Messages } from "../../constants/messages";
 
 export const logout = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    // Workaround: cast req as any to access custom user property
+    const userId = (req as any).user?.id;
 
     await clearAllUserSessionKeys(userId!);
     await destroySession(req);

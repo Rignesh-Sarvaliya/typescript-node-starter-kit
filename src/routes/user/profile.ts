@@ -3,9 +3,8 @@ import { getProfile } from "./profile.controller";
 import { requireUserAuth } from "../../middlewares/authMiddleware";
 import { logRoute } from "../../decorators/logRoute";
 import validateRequest from "../../middlewares/validateRequest";
-import { UpdateProfileRequestSchema } from "../../requests/user/profile.request";
+import { UpdateProfileRequestSchema } from "../../resources/user/profile.request";
 import { updateProfile } from "./profile.controller";
-
 
 const router = Router();
 

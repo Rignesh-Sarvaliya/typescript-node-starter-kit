@@ -7,7 +7,6 @@ import {
 import { hashPassword, comparePassword } from "../../utils/hash";
 import { generateSession } from "../../utils/session";
 import { formatUserResponse } from "../../resources/user/user.resource";
-import { findUserBySocialId } from "../../repositories/user.repository";
 import { AuthMessages, DefaultUserRole } from "../../constants/auth";
 
 import { logAppleCheck } from "../../jobs/logAppleCheck";
@@ -21,22 +20,20 @@ import { logResetLink } from "../../jobs/reset.jobs";
 import { Email } from "../../domain/valueObjects/email.vo";
 import { Password } from "../../domain/valueObjects/password.vo";
 import { UserEntity } from "../../domain/entities/user.entity";
-import { findUserByEmail } from "../../repositories/user.repository";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
-
-
 
 const prisma = new PrismaClient();
 
 const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
-  
+
   // Use domain value objects
   const emailVO = new Email(email);
   const passwordVO = new Password(password);
 
   const existing = await findUserByEmail(emailVO.getValue());
-  if (existing) return res.status(409).json({ message: AuthMessages.emailExists });
+  if (existing)
+    return res.status(409).json({ message: AuthMessages.emailExists });
 
   const hashed = await hashPassword(passwordVO.getValue());
 
@@ -45,20 +42,21 @@ const registerUser = async (req: Request, res: Response) => {
     email: emailVO.getValue(),
     password: hashed,
   });
-  
+
   appEmitter.emit(APP_EVENTS.USER_REGISTERED, {
     id: user.id,
     email: user.email,
   });
-  
+
   await generateSession(req, user.id, "user");
 
   logRegistration(email);
   userEmitter.emit("user.registered", { id: user.id, email });
 
+  const userEntity = new UserEntity(user.id, user.name, user.email);
   return res.json({
     message: AuthMessages.registered,
-    user: formatUserResponse(user),
+    user: formatUserResponse(userEntity),
   });
 };
 
@@ -71,17 +69,27 @@ const loginUser = async (req: Request, res: Response) => {
     return res.status(404).json({ message: AuthMessages.userNotFound });
   }
 
-  const isMatch = await comparePassword(passwordVO.getValue(), userRecord.password);
+  const isMatch = await comparePassword(
+    passwordVO.getValue(),
+    userRecord.password
+  );
   if (!isMatch) {
     return res.status(401).json({ message: AuthMessages.invalidCredentials });
   }
 
   await generateSession(req, userRecord.id, "user");
 
-  const userEntity = new UserEntity(userRecord.id, userRecord.name, userRecord.email);
+  const userEntity = new UserEntity(
+    userRecord.id,
+    userRecord.name,
+    userRecord.email
+  );
 
   logLogin(emailVO.getValue());
-  userEmitter.emit("user.loggedIn", { id: userRecord.id, email: userRecord.email });
+  userEmitter.emit("user.loggedIn", {
+    id: userRecord.id,
+    email: userRecord.email,
+  });
 
   return res.json({
     message: AuthMessages.login,
@@ -90,38 +98,9 @@ const loginUser = async (req: Request, res: Response) => {
 };
 
 const socialLogin = async (req: Request, res: Response) => {
-  const { social_id, provider, name, email } = req.body;
-
-  const prisma = new PrismaClient();
-
-  let user = await prisma.user.findFirst({
-    where: {
-      social_id,
-      provider,
-    },
-  });
-
-  if (!user) {
-    // Create new user
-    user = await prisma.user.create({
-      data: {
-        name,
-        email: email || `${provider}_${social_id}@nomail.com`,
-        social_id,
-        provider,
-        password: "", // optional: fill with dummy since password won't be used
-      },
-    });
-  }
-
-  await generateSession(req, user.id, "user");
-
-  return res.json({
-    message: "Login successful",
-    user: formatUserResponse(user),
-  });
+  // Social login is not supported by the current schema
+  return res.status(400).json({ message: "Social login is not supported." });
 };
-
 
 const appleDetails = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -129,16 +108,10 @@ const appleDetails = async (req: Request, res: Response) => {
   logAppleCheck(id);
   userEmitter.emit("appleDetailsChecked", { id });
 
-  const user = await findUserBySocialId(id, "apple");
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found for Apple ID" });
-  }
-
-  return res.json({
-    message: "User found",
-    user: formatUserResponse(user),
-  });
+  // Apple details lookup is not supported by the current schema
+  return res
+    .status(400)
+    .json({ message: "Apple details lookup is not supported." });
 };
 
 const sendOtp = async (req: Request, res: Response) => {
@@ -172,7 +145,6 @@ const forgotPassword = async (req: Request, res: Response) => {
 
   return res.json({ message: "Password reset link sent", resetUrl });
 };
-
 
 export const authenticationController = {
   registerUser,

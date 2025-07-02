@@ -10,7 +10,7 @@ export const requestLogger = (
   // Finish event is triggered when response is done
   res.on("finish", () => {
     const duration = Date.now() - start;
-    const user = req?.user;
+    const user = (req as any)?.user;
     const label =
       user?.role === "admin"
         ? `admin#${user.id}`

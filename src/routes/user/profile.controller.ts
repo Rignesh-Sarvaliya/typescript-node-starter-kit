@@ -5,14 +5,15 @@ import { Messages } from "../../constants/messages";
 import { captureError } from "../../telemetry/sentry";
 import { Email } from "../../domain/valueObjects/email.vo";
 import { Name } from "../../domain/valueObjects/name.vo";
-import { UpdateProfileRequestSchema } from "../../requests/user/profile.request";
+import { UpdateProfileRequestSchema } from "../../resources/user/profile.request";
 import { updateUserById } from "../../repositories/user.repository";
 import { logUserUpdate } from "../../jobs/profile.jobs";
 import { success, error } from "../../utils/responseWrapper";
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    // Workaround: cast req as any to access custom user property
+    const userId = (req as any).user?.id;
     const user = await findUserById(userId!);
 
     if (!user) {
@@ -20,18 +21,20 @@ export const getProfile = async (req: Request, res: Response) => {
     }
 
     // return res.json({ user: formatUserResponse(user) });
-    return res.json(success(formatUserResponse(user), "User fetched successfully"));
+    return res.json(
+      success(formatUserResponse(user), "User fetched successfully")
+    );
   } catch (err) {
     captureError(err, "getProfile");
     // return res.status(500).json({ message: "Server error" });
     return res.status(500).json(error("Failed to load profile"));
-
   }
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id!;
+    // Workaround: cast req as any to access custom user property
+    const userId = (req as any).user?.id!;
     const body = UpdateProfileRequestSchema.parse(req.body);
 
     const name = new Name(body.name);

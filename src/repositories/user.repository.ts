@@ -4,12 +4,6 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-export const findUserBySocialId = async (social_id: string, provider: string) => {
-  return prisma.user.findFirst({
-    where: { social_id, provider },
-  });
-};
-
 export const findUserByEmail = async (email: string) => {
   return prisma.user.findUnique({ where: { email } });
 };
@@ -40,7 +34,10 @@ export const updateUserById = async (
   return new UserEntity(user.id, user.name, user.email);
 };
 
-export const changeUserPassword = async (userId: number, newPassword: string) => {
+export const changeUserPassword = async (
+  userId: number,
+  newPassword: string
+) => {
   return prisma.user.update({
     where: { id: userId },
     data: { password: newPassword },
@@ -92,4 +89,8 @@ export const getAllUsersForExport = async () => {
       created_at: true,
     },
   });
+};
+
+export const findUserWithPasswordById = async (id: number) => {
+  return prisma.user.findUnique({ where: { id } });
 };

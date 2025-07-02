@@ -1,12 +1,12 @@
 import { Queue } from "bullmq";
-import { createClient } from "redis";
-
-const connection = createClient({ url: process.env.REDIS_URL });
 
 export const notificationQueue = new Queue("notification", {
-  connection,
+  connection: {
+    host: process.env.REDIS_HOST || "localhost",
+    port: Number(process.env.REDIS_PORT) || 6379,
+    password: process.env.REDIS_PASSWORD || undefined,
+  },
 });
-
 
 // import { notificationQueue } from "../../jobs/queues/notification.queue";
 

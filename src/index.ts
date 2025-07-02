@@ -2,7 +2,7 @@ import "dotenv/config";
 import { initSentry } from "./telemetry/sentry";
 import { startServer } from "./server";
 import { logger } from "./utils/logger";
-import "../events/listeners/otpListener";
+import "./events/listeners/otpListener";
 
 // Optional telemetry
 initSentry();

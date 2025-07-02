@@ -1,8 +1,9 @@
 import { Queue } from "bullmq";
-import { createClient } from "redis";
-
-const connection = createClient({ url: process.env.REDIS_URL });
 
 export const emailQueue = new Queue("email", {
-  connection,
+  connection: {
+    host: process.env.REDIS_HOST || "localhost",
+    port: Number(process.env.REDIS_PORT) || 6379,
+    password: process.env.REDIS_PASSWORD || undefined,
+  },
 });

@@ -1,23 +1,34 @@
 import { Request, Response } from "express";
 import { ChangePasswordRequestSchema } from "../../requests/user/password.request";
 import { comparePassword, hashPassword } from "../../utils/hash";
-import { changeUserPassword, findUserById } from "../../repositories/user.repository";
+import {
+  changeUserPassword,
+  findUserWithPasswordById,
+} from "../../repositories/user.repository";
 import { Password } from "../../domain/valueObjects/password.vo";
-import { isBlocked, recordFailedAttempt, clearFailedAttempts } from "../../utils/passwordAttempt";
+import {
+  isBlocked,
+  recordFailedAttempt,
+  clearFailedAttempts,
+} from "../../utils/passwordAttempt";
 import { logPasswordChange } from "../../jobs/password.jobs";
 import { captureError } from "../../telemetry/sentry";
 import { userEmitter } from "../../events/emitters/userEmitter";
 
 export const changePassword = async (req: Request, res: Response) => {
   try {
-    const userId = req.user!.id;
-    const { current_password, new_password } = ChangePasswordRequestSchema.parse(req.body);
+    // Workaround: cast req as any to access custom user property
+    const userId = (req as any).user!.id;
+    const { current_password, new_password } =
+      ChangePasswordRequestSchema.parse(req.body);
 
     if (await isBlocked(userId)) {
-      return res.status(429).json({ message: "Too many failed attempts. Try again later." });
+      return res
+        .status(429)
+        .json({ message: "Too many failed attempts. Try again later." });
     }
 
-    const user = await findUserById(userId);
+    const user = await findUserWithPasswordById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const current = new Password(current_password);
