@@ -26,20 +26,45 @@ export const startServer = async () => {
   const app = express();
   const httpServer = createServer(app);
 
-  if (redisClient.status !== "ready" && redisClient.status !== "connecting") {
-    await redisClient.connect();
+  // Try to connect to Redis, but don't fail if it's not available
+  let redisStore: any = undefined;
+  if (redisClient && process.env.NODE_ENV === "production") {
+    try {
+      if (
+        redisClient.status !== "ready" &&
+        redisClient.status !== "connecting"
+      ) {
+        await redisClient.connect();
+      }
+      redisStore = new (RedisStore as any)({ client: redisClient });
+      logger.info("✅ Redis connected successfully");
+    } catch (error) {
+      logger.warn("⚠️ Redis not available, using memory session store");
+      redisStore = undefined;
+    }
+  } else {
+    logger.info("ℹ️ Redis disabled for local development");
   }
   // app.use(loadLocales());
 
   // Middleware
+  app.use((req, res, next) => {
+    if (typeof res.setHeader !== "function") {
+      console.error("res.setHeader is not a function!", res);
+      return res
+        .status(500)
+        .json({ success: false, message: "res.setHeader is not a function" });
+    }
+    next();
+  });
   app.use(cors(corsConfig));
   app.use(express.json());
-  app.use(
-    session({
-      store: new (RedisStore as any)({ client: redisClient }),
-      ...sessionConfig,
-    })
-  );
+  // app.use(
+  //   session({
+  //     store: redisStore,
+  //     ...sessionConfig,
+  //   })
+  // );
   app.use(requestLogger);
   app.use(globalRateLimiter);
   // All route handlers above

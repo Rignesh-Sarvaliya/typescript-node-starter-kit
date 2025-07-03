@@ -7,15 +7,27 @@ import { createClient } from "redis";
 import router from "../../src/api/admin.routes"; // or user.routes
 
 const prisma = new PrismaClient();
-const redisClient = createClient();
-const RedisSession = RedisStore(session);
+
+let redisClient: any = null;
+let RedisSession: any = null;
+
+if (process.env.NODE_ENV === "production") {
+  try {
+    redisClient = createClient();
+    RedisSession = (RedisStore as any)(session);
+  } catch (error) {
+    console.warn("⚠️ Redis not available for test setup");
+  }
+} else {
+  console.info("ℹ️ Redis disabled for test setup in development");
+}
 
 export const app = express();
 
 app.use(express.json());
 app.use(
   session({
-    store: new RedisSession({ client: redisClient }),
+    store: RedisSession ? new RedisSession({ client: redisClient }) : undefined,
     secret: "test-secret",
     resave: false,
     saveUninitialized: false,

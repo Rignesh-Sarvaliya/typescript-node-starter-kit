@@ -11,13 +11,15 @@ export const exportUsersHandler = async (req: Request, res: Response) => {
     const { type } = ExportUserParamSchema.parse(req.params);
     const users = await getAllUsersForExport();
 
-    const fileName = `users_export_${new Date().toISOString().slice(0, 10)}.${type}`;
+    const fileName = `users_export_${new Date()
+      .toISOString()
+      .slice(0, 10)}.${type}`;
 
     if (type === "csv") {
       const parser = new Parser();
       const csv = parser.parse(users);
-      res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-      res.setHeader("Content-Type", "text/csv");
+      // res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+      // res.setHeader("Content-Type", "text/csv");
       logUserExport("csv");
       return res.send(csv);
     }
@@ -27,8 +29,8 @@ export const exportUsersHandler = async (req: Request, res: Response) => {
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Users");
       const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
-      res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      // res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+      // res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
       logUserExport("xlsx");
       return res.send(buffer);
     }

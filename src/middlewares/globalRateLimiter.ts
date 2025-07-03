@@ -1,8 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 import { createClient } from "redis";
 
-const redis = createClient({ url: process.env.REDIS_URL });
-redis.connect();
+// In-memory rate limiting fallback
+const memoryStore = new Map<string, { count: number; resetTime: number }>();
+
+let redis: any = null;
+// Only use Redis in production
+if (process.env.NODE_ENV === "production") {
+  try {
+    redis = createClient({ url: process.env.REDIS_URL });
+    redis.connect();
+  } catch (error) {
+    console.warn(
+      "⚠️ Redis not available for rate limiting, using memory store"
+    );
+  }
+} else {
+  console.info("ℹ️ Redis disabled for rate limiting in local development");
+}
 
 // ⏱ Route-specific limits
 const RATE_LIMIT_RULES: Record<string, { limit: number; window: number }> = {
@@ -29,22 +44,44 @@ export const globalRateLimiter = async (
     const { limit, window } = RATE_LIMIT_RULES[path];
     const redisKey = `rate:${path}:${identifier}`;
 
-    const current = await redis.incr(redisKey);
-    if (current === 1) {
-      await redis.expire(redisKey, window);
-    }
+    if (redis) {
+      // Use Redis if available
+      const current = await redis.incr(redisKey);
+      if (current === 1) {
+        await redis.expire(redisKey, window);
+      }
 
-    if (current > limit) {
-      return res.status(429).json({
-        message: "Too many requests — please slow down.",
-        route: path,
-        retry_after: window,
-      });
+      if (current > limit) {
+        return res.status(429).json({
+          message: "Too many requests — please slow down.",
+          route: path,
+          retry_after: window,
+        });
+      }
+    } else {
+      // Use in-memory store as fallback
+      const now = Date.now();
+      const key = `${path}:${identifier}`;
+      const record = memoryStore.get(key);
+
+      if (!record || now > record.resetTime) {
+        memoryStore.set(key, { count: 1, resetTime: now + window * 1000 });
+      } else {
+        record.count++;
+        if (record.count > limit) {
+          return res.status(429).json({
+            message: "Too many requests — please slow down.",
+            route: path,
+            retry_after: window,
+          });
+        }
+      }
     }
 
     next();
   } catch (error) {
     console.error("❌ RateLimiter error:", error);
-    return res.status(500).json({ message: "Rate limiter failed" });
+    // Continue without rate limiting if there's an error
+    next();
   }
 };
