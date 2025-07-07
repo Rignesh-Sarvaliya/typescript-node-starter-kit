@@ -1,4 +1,12 @@
-export const generateSession = async (req: any, userId: number, role: "user" | "admin") => {
+export const generateSession = async (
+  req: any,
+  userId: number,
+  role: "user" | "admin"
+) => {
+  if (!req.session) {
+    req.session = {};
+  }
+
   req.session.user = {
     id: userId,
     role,
