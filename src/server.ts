@@ -1,5 +1,4 @@
 import express from "express";
-import cors from "cors";
 import { createServer } from "http";
 import session from "express-session";
 import { logger } from "./utils/logger";
@@ -7,7 +6,6 @@ import { redisClient } from "./config/redis.config";
 import RedisStore from "connect-redis";
 import { loadLocales } from "./utils/i18n";
 // import { errorHandler } from "./middlewares/errorHandler";
-import { globalErrorHandler as errorHandler } from "./middlewares/errorHandler";
 import corsConfig from "./config/cors.config";
 import sessionConfig from "./config/session.config";
 import { globalRateLimiter } from "./middlewares/globalRateLimiter";
@@ -67,8 +65,6 @@ export const startServer = async () => {
   // );
   app.use(requestLogger);
   app.use(globalRateLimiter);
-  // All route handlers above
-  app.use(globalErrorHandler); // last in the stack
 
   // root route
   app.get("/", (req, res) => {
@@ -87,8 +83,8 @@ export const startServer = async () => {
   app.use("/api/docs", docsRoutes);
   app.use("/api/admin/queues", bullBoardRoutes);
 
-  // Error handler
-  app.use(errorHandler);
+  // Error handler (should be last)
+  app.use(globalErrorHandler);
 
   const PORT = process.env.PORT || 3000;
   httpServer.listen(PORT, () => {
