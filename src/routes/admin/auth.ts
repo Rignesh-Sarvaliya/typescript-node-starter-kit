@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminLogin } from "./auth.controller";
+import { loginAdmin } from "./auth.controller";
 import { AdminLoginRequestSchema } from "../../requests/admin/auth.request";
 import validateRequest from "../../middlewares/validateRequest";
 import { logRoute } from "../../decorators/logRoute";
@@ -10,7 +10,7 @@ router.post(
   "/admin/login",
   logRoute("ADMIN_LOGIN"),
   validateRequest({ body: AdminLoginRequestSchema }),
-  adminLogin
+  loginAdmin
 );
 
 export default router;
