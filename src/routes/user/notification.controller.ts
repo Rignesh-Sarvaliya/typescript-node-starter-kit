@@ -11,7 +11,7 @@ import { Messages } from "../../constants/messages";
 
 export const getNotifications = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user!.id;
+    const userId = req.user!.id;
     const notifications = await findUserNotifications(userId);
     return res.json({ notifications: formatNotificationList(notifications) });
   } catch (error) {
@@ -23,7 +23,7 @@ export const getNotifications = async (req: Request, res: Response) => {
 export const changeNotificationStatus = async (req: Request, res: Response) => {
   try {
     const { status } = NotificationStatusParamSchema.parse(req.params);
-    const userId = (req as any).user!.id;
+    const userId = req.user!.id;
 
     const updatedCount = await updateUserNotificationStatus(
       userId,
@@ -42,7 +42,7 @@ export const changeNotificationStatus = async (req: Request, res: Response) => {
 
 export const clearAllNotifications = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user!.id;
+    const userId = req.user!.id;
 
     const deletedCount = await deleteAllNotificationsForUser(userId);
 

@@ -13,7 +13,7 @@ export const requireUserAuth = (
     return res.status(401).json({ message: Messages.unauthorized });
   }
 
-  (req as any).user = (req.session as any).user;
+  req.user = (req.session as any).user;
   next();
 };
 
@@ -29,6 +29,6 @@ export const requireAdminAuth = (
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  (req as any).user = (req.session as any).user;
+  req.user = (req.session as any).user;
   next();
 };

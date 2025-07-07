@@ -30,7 +30,7 @@ export const rateLimiter = ({
 }) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const identifier = (req as any).user?.id || req.ip || "unknown";
+      const identifier = req.user?.id || req.ip || "unknown";
       const key = `${keyPrefix}:${identifier}`;
 
       if (redis && process.env.NODE_ENV === "production") {

@@ -9,17 +9,21 @@ import { formatAdminResponse } from "../../resources/admin/admin.resource";
 import { logAdminLogin } from "../../jobs/admin.jobs";
 import { AdminPassword } from "../../domain/valueObjects/adminPassword.vo";
 import { captureError } from "../../telemetry/sentry";
-import { appEmitter, APP_EVENTS } from "../emitters/appEmitter";
+import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
 
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
     const { email, password } = AdminLoginRequestSchema.parse(req.body);
 
     const admin = await findAdminByEmail(email);
-    if (!admin) return res.status(404).json({ message: AdminMessages.notFound });
+    if (!admin)
+      return res.status(404).json({ message: AdminMessages.notFound });
 
     const valid = await comparePassword(password, admin.password);
-    if (!valid) return res.status(401).json({ message: AdminMessages.invalidCredentials });
+    if (!valid)
+      return res
+        .status(401)
+        .json({ message: AdminMessages.invalidCredentials });
 
     const adminEntity = new AdminEntity(admin.id, admin.name, admin.email);
 
@@ -32,7 +36,6 @@ export const loginAdmin = async (req: Request, res: Response) => {
       timestamp: new Date(),
     });
 
-    
     return res.json({
       message: AdminMessages.loginSuccess,
       admin: formatAdminResponse(adminEntity),

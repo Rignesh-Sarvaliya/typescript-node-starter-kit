@@ -29,16 +29,15 @@ const RATE_LIMIT_RULES: Record<string, { limit: number; window: number }> = {
 };
 
 export const globalRateLimiter = async (
-  req: Express.Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // Workaround: cast req as any to access custom user property and standard properties
-    const identifier = (req as any).user?.id || (req as any).ip;
+    const identifier = req.user?.id || req.ip;
     const path =
       Object.keys(RATE_LIMIT_RULES).find((key) =>
-        (req as any).originalUrl.startsWith(key)
+        req.originalUrl.startsWith(key)
       ) || "*";
 
     const { limit, window } = RATE_LIMIT_RULES[path];
