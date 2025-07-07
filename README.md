@@ -31,6 +31,16 @@ src/
 
 ---
 
+## 🛠 Installation
+
+Install project dependencies (including Jest for running tests):
+
+```bash
+npm install
+```
+
+---
+
 ## 🔐 Auth System
 
 - User auth (register/login/OTP/forgot-password)
