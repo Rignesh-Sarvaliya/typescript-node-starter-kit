@@ -21,129 +21,160 @@ import { Email } from "../../domain/valueObjects/email.vo";
 import { Password } from "../../domain/valueObjects/password.vo";
 import { UserEntity } from "../../domain/entities/user.entity";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
+import { captureError } from "../../telemetry/sentry";
 
 const prisma = new PrismaClient();
 
 const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  try {
+    const { name, email, password } = req.body;
 
-  // Use domain value objects
-  const emailVO = new Email(email);
-  const passwordVO = new Password(password);
+    // Use domain value objects
+    const emailVO = new Email(email);
+    const passwordVO = new Password(password);
 
-  const existing = await findUserByEmail(emailVO.getValue());
-  if (existing)
-    return res.status(409).json({ message: AuthMessages.emailExists });
+    const existing = await findUserByEmail(emailVO.getValue());
+    if (existing)
+      return res.status(409).json({ message: AuthMessages.emailExists });
 
-  const hashed = await hashPassword(passwordVO.getValue());
+    const hashed = await hashPassword(passwordVO.getValue());
 
-  const user = await createUser({
-    name,
-    email: emailVO.getValue(),
-    password: hashed,
-  });
+    const user = await createUser({
+      name,
+      email: emailVO.getValue(),
+      password: hashed,
+    });
 
-  appEmitter.emit(APP_EVENTS.USER_REGISTERED, {
-    id: user.id,
-    email: user.email,
-  });
+    appEmitter.emit(APP_EVENTS.USER_REGISTERED, {
+      id: user.id,
+      email: user.email,
+    });
 
-  await generateSession(req, user.id, "user");
+    await generateSession(req, user.id, "user");
 
-  logRegistration(email);
-  userEmitter.emit("user.registered", { id: user.id, email });
+    logRegistration(email);
+    userEmitter.emit("user.registered", { id: user.id, email });
 
-  const userEntity = new UserEntity(user.id, user.name, user.email);
-  return res.json({
-    message: AuthMessages.registered,
-    user: formatUserResponse(userEntity),
-  });
+    const userEntity = new UserEntity(user.id, user.name, user.email);
+    return res.json({
+      message: AuthMessages.registered,
+      user: formatUserResponse(userEntity),
+    });
+  } catch (error) {
+    captureError(error, "registerUser");
+    return res.status(500).json({ message: "Registration failed" });
+  }
 };
 
 const loginUser = async (req: Request, res: Response) => {
-  const emailVO = new Email(req.body.email);
-  const passwordVO = new Password(req.body.password);
+  try {
+    const emailVO = new Email(req.body.email);
+    const passwordVO = new Password(req.body.password);
 
-  const userRecord = await findUserByEmail(emailVO.getValue());
-  if (!userRecord) {
-    return res.status(404).json({ message: AuthMessages.userNotFound });
+    const userRecord = await findUserByEmail(emailVO.getValue());
+    if (!userRecord) {
+      return res.status(404).json({ message: AuthMessages.userNotFound });
+    }
+
+    const isMatch = await comparePassword(
+      passwordVO.getValue(),
+      userRecord.password
+    );
+    if (!isMatch) {
+      return res.status(401).json({ message: AuthMessages.invalidCredentials });
+    }
+
+    await generateSession(req, userRecord.id, "user");
+
+    const userEntity = new UserEntity(
+      userRecord.id,
+      userRecord.name,
+      userRecord.email
+    );
+
+    logLogin(emailVO.getValue());
+    userEmitter.emit("user.loggedIn", {
+      id: userRecord.id,
+      email: userRecord.email,
+    });
+
+    return res.json({
+      message: AuthMessages.login,
+      user: formatUserResponse(userEntity),
+    });
+  } catch (error) {
+    captureError(error, "loginUser");
+    return res.status(500).json({ message: "Login failed" });
   }
-
-  const isMatch = await comparePassword(
-    passwordVO.getValue(),
-    userRecord.password
-  );
-  if (!isMatch) {
-    return res.status(401).json({ message: AuthMessages.invalidCredentials });
-  }
-
-  await generateSession(req, userRecord.id, "user");
-
-  const userEntity = new UserEntity(
-    userRecord.id,
-    userRecord.name,
-    userRecord.email
-  );
-
-  logLogin(emailVO.getValue());
-  userEmitter.emit("user.loggedIn", {
-    id: userRecord.id,
-    email: userRecord.email,
-  });
-
-  return res.json({
-    message: AuthMessages.login,
-    user: formatUserResponse(userEntity),
-  });
 };
 
 const socialLogin = async (req: Request, res: Response) => {
-  // Social login is not supported by the current schema
-  return res.status(400).json({ message: "Social login is not supported." });
+  try {
+    // Social login is not supported by the current schema
+    return res.status(400).json({ message: "Social login is not supported." });
+  } catch (error) {
+    captureError(error, "socialLogin");
+    return res.status(500).json({ message: "Social login failed" });
+  }
 };
 
 const appleDetails = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  logAppleCheck(id);
-  userEmitter.emit("appleDetailsChecked", { id });
+    logAppleCheck(id);
+    userEmitter.emit("appleDetailsChecked", { id });
 
-  // Apple details lookup is not supported by the current schema
-  return res
-    .status(400)
-    .json({ message: "Apple details lookup is not supported." });
+    // Apple details lookup is not supported by the current schema
+    return res
+      .status(400)
+      .json({ message: "Apple details lookup is not supported." });
+  } catch (error) {
+    captureError(error, "appleDetails");
+    return res.status(500).json({ message: "Failed to fetch apple details" });
+  }
 };
 
 const sendOtp = async (req: Request, res: Response) => {
-  const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-  const otp = generateOtp();
-  await saveOtpToRedis(email, otp);
+    const otp = generateOtp();
+    await saveOtpToRedis(email, otp);
 
-  logOtpSend(email, otp);
-  userEmitter.emit("otp.sent", { email, otp });
+    logOtpSend(email, otp);
+    userEmitter.emit("otp.sent", { email, otp });
 
-  // In real project, integrate email/SMS here
-  return res.json({
-    message: "OTP sent to email",
-  });
+    // In real project, integrate email/SMS here
+    return res.json({
+      message: "OTP sent to email",
+    });
+  } catch (error) {
+    captureError(error, "sendOtp");
+    return res.status(500).json({ message: "Failed to send OTP" });
+  }
 };
 
 const forgotPassword = async (req: Request, res: Response) => {
-  const emailVO = new Email(req.body.email);
+  try {
+    const emailVO = new Email(req.body.email);
 
-  const user = await findUserByEmail(emailVO.getValue());
-  if (!user) {
-    return res.status(404).json({ message: "Email not found" });
+    const user = await findUserByEmail(emailVO.getValue());
+    if (!user) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    const token = await generateResetToken(user.id);
+    const resetUrl = `${ResetPasswordConstants.linkPrefix}${token}`;
+
+    logResetLink(emailVO.getValue(), resetUrl);
+    userEmitter.emit("password.reset_link.sent", { email: user.email, token });
+
+    return res.json({ message: "Password reset link sent", resetUrl });
+  } catch (error) {
+    captureError(error, "forgotPassword");
+    return res.status(500).json({ message: "Failed to send reset link" });
   }
-
-  const token = await generateResetToken(user.id);
-  const resetUrl = `${ResetPasswordConstants.linkPrefix}${token}`;
-
-  logResetLink(emailVO.getValue(), resetUrl);
-  userEmitter.emit("password.reset_link.sent", { email: user.email, token });
-
-  return res.json({ message: "Password reset link sent", resetUrl });
 };
 
 export const authenticationController = {
