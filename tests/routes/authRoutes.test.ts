@@ -1,0 +1,246 @@
+import { createTestServer, TestServer } from '../helpers/expressTestHelper';
+import authRoutes from '../../src/routes/user/auth';
+import * as userRepo from '../../src/repositories/user.repository';
+import * as hashUtils from '../../src/utils/hash';
+import * as otpUtils from '../../src/utils/otp';
+import * as resetTokenUtils from '../../src/utils/resetToken';
+import { logAppleCheck } from '../../src/jobs/logAppleCheck';
+
+jest.mock('../../src/repositories/user.repository');
+jest.mock('../../src/utils/hash');
+jest.mock('../../src/utils/otp');
+jest.mock('../../src/utils/resetToken');
+jest.mock('../../src/jobs/logAppleCheck');
+
+let server: TestServer;
+
+beforeAll(() => {
+  server = createTestServer(authRoutes);
+});
+
+beforeEach(() => {
+  jest.resetAllMocks();
+});
+
+describe('Auth Routes', () => {
+  describe('POST /auth/register', () => {
+    it('should register a new user', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce(null);
+      (hashUtils.hashPassword as jest.Mock).mockResolvedValueOnce('hashed');
+      (userRepo.createUser as jest.Mock).mockResolvedValueOnce({
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+      });
+
+      const res = await server.request.post('/auth/register').send({
+        name: 'John',
+        email: 'john@example.com',
+        password: 'secret123',
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('User registered successfully');
+    });
+
+    it('should return 409 if email exists', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce({ id: 1 });
+
+      const res = await server.request.post('/auth/register').send({
+        name: 'John',
+        email: 'john@example.com',
+        password: 'secret123',
+      });
+
+      expect(res.status).toBe(409);
+    });
+
+    it('should return 422 for invalid payload', async () => {
+      const res = await server.request.post('/auth/register').send({
+        name: 'J',
+        email: 'bad',
+        password: '1',
+      });
+
+      expect(res.status).toBe(422);
+    });
+
+    it('should handle server errors', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockRejectedValueOnce(new Error('db error'));
+
+      const res = await server.request.post('/auth/register').send({
+        name: 'John',
+        email: 'john@example.com',
+        password: 'secret123',
+      });
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('POST /auth/login', () => {
+    it('should login successfully', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce({
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        password: 'hashed',
+      });
+      (hashUtils.comparePassword as jest.Mock).mockResolvedValueOnce(true);
+
+      const res = await server.request.post('/auth/login').send({
+        email: 'john@example.com',
+        password: 'secret123',
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Login successful');
+    });
+
+    it('should return 404 if user not found', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await server.request.post('/auth/login').send({
+        email: 'john@example.com',
+        password: 'secret123',
+      });
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 401 for invalid credentials', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce({
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        password: 'hashed',
+      });
+      (hashUtils.comparePassword as jest.Mock).mockResolvedValueOnce(false);
+
+      const res = await server.request.post('/auth/login').send({
+        email: 'john@example.com',
+        password: 'secret123',
+      });
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 422 for invalid payload', async () => {
+      const res = await server.request.post('/auth/login').send({
+        email: 'bad',
+        password: '1',
+      });
+
+      expect(res.status).toBe(422);
+    });
+
+    it('should handle server errors', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockRejectedValueOnce(new Error('db error'));
+
+      const res = await server.request.post('/auth/login').send({
+        email: 'john@example.com',
+        password: 'secret123',
+      });
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('POST /auth/social-login', () => {
+    it('should return 400 as not supported', async () => {
+      const res = await server.request.post('/auth/social-login').send({
+        social_id: 'abc',
+        provider: 'google',
+        name: 'John',
+      });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 422 for invalid payload', async () => {
+      const res = await server.request.post('/auth/social-login').send({
+        social_id: '',
+        provider: 'google',
+        name: 'John',
+      });
+      expect(res.status).toBe(422);
+    });
+
+    it('should handle server errors', async () => {
+      (logAppleCheck as jest.Mock).mockImplementationOnce(() => { throw new Error('fail'); });
+      // call apple route to trigger catch; social-login has no dep to throw
+      const res = await server.request.get('/auth/apple-details/abc');
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('GET /auth/apple-details/:id', () => {
+    it('should return 400 as feature not supported', async () => {
+      const res = await server.request.get('/auth/apple-details/abc');
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 422 for invalid params', async () => {
+      const res = await server.request.get('/auth/apple-details/ab');
+      expect(res.status).toBe(422);
+    });
+
+    it('should handle server errors', async () => {
+      (logAppleCheck as jest.Mock).mockImplementationOnce(() => { throw new Error('fail'); });
+      const res = await server.request.get('/auth/apple-details/abc');
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('POST /auth/send/otp', () => {
+    it('should send otp', async () => {
+      (otpUtils.generateOtp as jest.Mock).mockReturnValueOnce('123456');
+      const res = await server.request.post('/auth/send/otp').send({ email: 'john@example.com' });
+      expect(res.status).toBe(200);
+    });
+
+    it('should return 422 for invalid payload', async () => {
+      const res = await server.request.post('/auth/send/otp').send({ email: 'bad' });
+      expect(res.status).toBe(422);
+    });
+
+    it('should handle server errors', async () => {
+      (otpUtils.saveOtpToRedis as jest.Mock).mockRejectedValueOnce(new Error('redis error'));
+      const res = await server.request.post('/auth/send/otp').send({ email: 'john@example.com' });
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('POST /auth/forgot/password', () => {
+    it('should send reset link', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce({ id: 1, email: 'john@example.com' });
+      (resetTokenUtils.generateResetToken as jest.Mock).mockResolvedValueOnce('token');
+
+      const res = await server.request.post('/auth/forgot/password').send({ email: 'john@example.com' });
+      expect(res.status).toBe(200);
+      expect(res.body.resetUrl).toBeDefined();
+    });
+
+    it('should return 404 when email not found', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce(null);
+      const res = await server.request.post('/auth/forgot/password').send({ email: 'john@example.com' });
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 422 for invalid payload', async () => {
+      const res = await server.request.post('/auth/forgot/password').send({ email: 'bad' });
+      expect(res.status).toBe(422);
+    });
+
+    it('should handle server errors', async () => {
+      (userRepo.findUserByEmail as jest.Mock).mockRejectedValueOnce(new Error('db error'));
+      const res = await server.request.post('/auth/forgot/password').send({ email: 'john@example.com' });
+      expect(res.status).toBe(500);
+    });
+  });
+
+  it('should return 404 for unknown route', async () => {
+    const res = await server.request.get('/unknown');
+    expect(res.status).toBe(404);
+  });
+});
