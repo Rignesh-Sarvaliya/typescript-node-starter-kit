@@ -16,6 +16,7 @@ import { requestLogger } from "./middlewares/requestLogger";
 
 // Routes
 import userRoutes from "./api/user.routes";
+import adminRoutes from "./api/admin.routes";
 import healthRoutes from "./api/health.routes";
 import docsRoutes from "./api/docs.routes";
 import bullBoardRoutes from "./api/bull.routes";
@@ -80,6 +81,7 @@ export const startServer = async () => {
 
   // User routes
   app.use("/api", userRoutes);
+  app.use("/api/admin", adminRoutes);
   app.use("/api/docs", docsRoutes);
   app.use("/api/admin/queues", bullBoardRoutes);
 
