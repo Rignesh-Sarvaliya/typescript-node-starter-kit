@@ -14,6 +14,12 @@ beforeAll(() => {
 
 beforeEach(() => {
   jest.resetAllMocks();
+  (userRepo.findUserByEmail as jest.Mock).mockResolvedValue({
+    id: 1,
+    name: 'John',
+    email: 'a@b.com',
+    password: 'secret123',
+  });
 });
 
 describe('User Router', () => {
