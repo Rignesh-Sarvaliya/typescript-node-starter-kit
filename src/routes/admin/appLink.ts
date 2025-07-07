@@ -7,7 +7,7 @@ import {
   UpdateAppLinkParamSchema,
 } from "../../requests/admin/appLink.request";
 import { updateAppLinkHandler } from "./appLink.controller";
-import { validateRequest } from "../../middlewares/validateRequest";
+import validateRequest from "../../middlewares/validateRequest";
 
 
 
