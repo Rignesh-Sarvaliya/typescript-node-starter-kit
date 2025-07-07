@@ -20,7 +20,6 @@ import {
 import { updateAppLinkById } from "../../repositories/appLink.repository";
 import { logAppLinkUpdate } from "../../jobs/appLink.jobs";
 import { formatAppLink } from "../../resources/admin/appLink.resource";
-import { captureError } from "../../telemetry/sentry";
 
 export const updateAppLinkHandler = async (req: Request, res: Response) => {
   try {
