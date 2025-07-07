@@ -57,7 +57,7 @@ export const startServer = async () => {
     }
     next();
   });
-  app.use(cors(corsConfig));
+  app.use(corsConfig);
   app.use(express.json());
   // app.use(
   //   session({
