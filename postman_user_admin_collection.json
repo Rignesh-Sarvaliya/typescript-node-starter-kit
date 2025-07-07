@@ -1,0 +1,524 @@
+{
+  "info": {
+    "_postman_id": "7e0b9c53-1234-5678-9101-abcdefabcdef",
+    "name": "User and Admin API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Init",
+          "item": [
+            {
+              "name": "Init App",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/init/:app_version/:app_type",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "init", ":app_version", ":app_type"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Register User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"secret123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/register",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "register"]
+                }
+              }
+            },
+            {
+              "name": "Login User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"secret123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "login"]
+                }
+              }
+            },
+            {
+              "name": "Social Login",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"provider\": \"google\",\n  \"token\": \"<token>\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/social-login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "social-login"]
+                }
+              }
+            },
+            {
+              "name": "Apple Details",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/auth/apple-details/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "apple-details", ":id"]
+                }
+              }
+            },
+            {
+              "name": "Send OTP",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/send/otp",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "send", "otp"]
+                }
+              }
+            },
+            {
+              "name": "Forgot Password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/forgot/password",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "forgot", "password"]
+                }
+              }
+            },
+            {
+              "name": "Logout User",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/user/logout",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "user", "logout"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profile",
+          "item": [
+            {
+              "name": "Get Profile",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/user/me",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "user", "me"]
+                }
+              }
+            },
+            {
+              "name": "Update Profile",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/user/update",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "user", "update"]
+                }
+              }
+            },
+            {
+              "name": "Change Password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"old_password\": \"oldpass\",\n  \"new_password\": \"newpass\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/user/change/password",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "user", "change", "password"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Notification",
+          "item": [
+            {
+              "name": "Get Notifications",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/user/notifications",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "user", "notifications"]
+                }
+              }
+            },
+            {
+              "name": "Change Notification Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/user/notifications/status/change/:status",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "user", "notifications", "status", "change", ":status"]
+                }
+              }
+            },
+            {
+              "name": "Clear All Notifications",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/user/notifications/clear-all",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "user", "notifications", "clear-all"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Admin Login",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"adminpass\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "login"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profile",
+          "item": [
+            {
+              "name": "Get Admin Profile",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/me",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "me"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "AppSetting",
+          "item": [
+            {
+              "name": "List App Settings",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-settings",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-settings"]
+                }
+              }
+            },
+            {
+              "name": "Create App Setting",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"setting\",\n  \"value\": \"value\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-settings",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-settings"]
+                }
+              }
+            },
+            {
+              "name": "Update App Setting",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"setting\",\n  \"value\": \"updated\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-settings/:id/update",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-settings", ":id", "update"]
+                }
+              }
+            },
+            {
+              "name": "Delete App Setting",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-settings/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-settings", ":id"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "AppLink",
+          "item": [
+            {
+              "name": "List App Links",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-links",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-links"]
+                }
+              }
+            },
+            {
+              "name": "Update App Link",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"http://example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-links/:id/update",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-links", ":id", "update"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "AppVariable",
+          "item": [
+            {
+              "name": "List App Variables",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-variables",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-variables"]
+                }
+              }
+            },
+            {
+              "name": "Create App Variable",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"VAR\",\n  \"value\": \"value\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-variables/store",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-variables", "store"]
+                }
+              }
+            },
+            {
+              "name": "Update App Variable",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": \"updated\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/app-variables/:id/update",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "app-variables", ":id", "update"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "User",
+          "item": [
+            {
+              "name": "List Users",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/users",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "users"]
+                }
+              }
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/users/:id/update",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "users", ":id", "update"]
+                }
+              }
+            },
+            {
+              "name": "Toggle User Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/users/:id/toggle",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "users", ":id", "toggle"]
+                }
+              }
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/users/:id/delete",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "users", ":id", "delete"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Export",
+          "item": [
+            {
+              "name": "Export Users",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/export/users/:type",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "export", "users", ":type"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
