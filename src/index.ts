@@ -1,4 +1,5 @@
 import "dotenv/config";
+import "./types/express";
 import { initSentry } from "./telemetry/sentry";
 import { startServer } from "./server";
 import { logger } from "./utils/logger";
