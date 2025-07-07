@@ -24,14 +24,12 @@ export const createUser = async (data: {
 
 export const updateUserById = async (
   id: number,
-  data: { name: string; email: string }
-): Promise<UserEntity> => {
-  const user = await prisma.user.update({
+  data: { name?: string; email?: string; status?: boolean }
+) => {
+  return prisma.user.update({
     where: { id },
     data,
   });
-
-  return new UserEntity(user.id, user.name, user.email);
 };
 
 export const changeUserPassword = async (
@@ -49,16 +47,6 @@ export const getAllUsers = async () => {
     orderBy: { created_at: "desc" },
   });
 };
-
-// export const updateUserById = async (
-//   id: number,
-//   data: { name?: string; email?: string; status?: boolean }
-// ) => {
-//   return prisma.user.update({
-//     where: { id },
-//     data,
-//   });
-// };
 
 export const toggleUserStatus = async (id: number): Promise<any> => {
   const user = await prisma.user.findUnique({ where: { id } });

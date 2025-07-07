@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
-import { findUserById } from "../../repositories/user.repository";
+import {
+  findUserById,
+  updateUserById,
+} from "../../repositories/user.repository";
 import { formatUserResponse } from "../../resources/user/user.resource";
 import { Messages } from "../../constants/messages";
 import { captureError } from "../../telemetry/sentry";
 import { Email } from "../../domain/valueObjects/email.vo";
 import { Name } from "../../domain/valueObjects/name.vo";
+import { UserEntity } from "../../domain/entities/user.entity";
 import { UpdateProfileRequestSchema } from "../../resources/user/profile.request";
-import { updateUserById } from "../../repositories/user.repository";
 import { logUserUpdate } from "../../jobs/profile.jobs";
 import { success, error } from "../../utils/responseWrapper";
 
@@ -45,9 +48,16 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     logUserUpdate(userId, email.getValue());
 
+    // Convert raw database object to UserEntity
+    const userEntity = new UserEntity(
+      updatedUser.id,
+      updatedUser.name,
+      updatedUser.email
+    );
+
     return res.json({
       message: "Profile updated successfully",
-      user: formatUserResponse(updatedUser),
+      user: formatUserResponse(userEntity),
     });
   } catch (error) {
     captureError(error, "updateProfile");

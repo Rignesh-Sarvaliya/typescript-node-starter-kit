@@ -1,17 +1,29 @@
 import { Request, Response } from "express";
-import { getAllUsers } from "../../repositories/user.repository";
-import { formatUserListForAdmin } from "../../resources/admin/user.resource";
+import { PrismaClient } from "@prisma/client";
+import {
+  getAllUsers,
+  updateUserById,
+  toggleUserStatus,
+  softDeleteUser,
+} from "../../repositories/user.repository";
+import {
+  formatUserListForAdmin,
+  formatUserForAdmin,
+} from "../../resources/admin/user.resource";
 import { captureError } from "../../telemetry/sentry";
 import {
   UpdateUserParamSchema,
   UpdateUserBodySchema,
+  DeleteUserParamSchema,
+  ToggleUserParamSchema,
 } from "../../requests/admin/user.request";
-import { updateUserById } from "../../repositories/user.repository";
-import { logUserUpdated } from "../../jobs/user.jobs";
-import { formatUserForAdmin } from "../../resources/admin/user.resource";
-import { DeleteUserParamSchema } from "../../requests/admin/user.request";
-import { softDeleteUser } from "../../repositories/user.repository";
-import { logUserDeleted } from "../../jobs/user.jobs";
+import {
+  logUserUpdated,
+  logUserToggled,
+  logUserDeleted,
+} from "../../jobs/user.jobs";
+
+const prisma = new PrismaClient();
 
 export const getAllUsersHandler = async (req: Request, res: Response) => {
   try {
@@ -22,17 +34,6 @@ export const getAllUsersHandler = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Failed to load users" });
   }
 };
-
-export const updateUserById = async (
-  id: number,
-  data: { name?: string; email?: string; status?: boolean }
-) => {
-  return prisma.user.update({
-    where: { id },
-    data,
-  });
-};
-
 
 export const updateUserHandler = async (req: Request, res: Response) => {
   try {
@@ -53,14 +54,10 @@ export const updateUserHandler = async (req: Request, res: Response) => {
   }
 };
 
-import { ToggleUserParamSchema } from "../../requests/admin/user.request";
-import { toggleUserStatus } from "../../repositories/user.repository";
-import { logUserToggled } from "../../jobs/user.jobs";
-
 export const toggleUserStatusHandler = async (req: Request, res: Response) => {
   try {
     const { id } = ToggleUserParamSchema.parse(req.params);
-    const user = await toggleUserSstatus(Number(id));
+    const user = await toggleUserStatus(Number(id));
 
     logUserToggled(user.id, user.status);
 
@@ -73,7 +70,6 @@ export const toggleUserStatusHandler = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Failed to toggle user" });
   }
 };
-
 
 export const deleteUserHandler = async (req: Request, res: Response) => {
   try {
