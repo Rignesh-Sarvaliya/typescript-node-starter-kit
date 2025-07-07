@@ -1,5 +1,4 @@
-import request from 'supertest';
-import express from 'express';
+import { createTestServer, TestServer } from '../helpers/expressTestHelper';
 
 const mockFindFirst = jest.fn();
 
@@ -13,9 +12,11 @@ jest.mock("@prisma/client", () => {
 
 import initRoutes from '../../src/routes/user/init';
 
-const app = express();
-app.use(express.json());
-app.use('/', initRoutes);
+let server: TestServer;
+
+beforeAll(() => {
+  server = createTestServer(initRoutes);
+});
 
 describe('Init Routes', () => {
   beforeEach(() => {
@@ -32,7 +33,7 @@ describe('Init Routes', () => {
     };
     mockFindFirst.mockResolvedValueOnce(mockSetting);
 
-    const res = await request(app).get('/init/1.0.0/android');
+    const res = await server.request.get('/init/1.0.0/android');
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({
       app_type: 'android',
@@ -46,7 +47,18 @@ describe('Init Routes', () => {
   it('should return 404 when no setting found', async () => {
     mockFindFirst.mockResolvedValueOnce(null);
 
-    const res = await request(app).get('/init/1.0.0/android');
+    const res = await server.request.get('/init/1.0.0/android');
     expect(res.statusCode).toBe(404);
+  });
+
+  it('should return 422 for invalid params', async () => {
+    const res = await server.request.get('/init/bad-version/android');
+    expect(res.statusCode).toBe(422);
+  });
+
+  it('should handle server errors', async () => {
+    mockFindFirst.mockRejectedValueOnce(new Error('db error'));
+    const res = await server.request.get('/init/1.0.0/android');
+    expect(res.statusCode).toBe(500);
   });
 });
