@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
-const testSetup_1 = require("../utils/testSetup");
+const testSetup_1 = require("../../src/utils/testSetup");
 describe("Auth Routes", () => {
     it("should return 401 for invalid login", async () => {
         const res = await (0, supertest_1.default)(testSetup_1.app).post("/auth/login").send({

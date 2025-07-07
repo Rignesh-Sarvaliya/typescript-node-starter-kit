@@ -1,5 +1,5 @@
 import request from "supertest";
-import { app } from "../utils/testSetup";
+import { app } from "../../src/utils/testSetup";
 
 describe("Auth Routes", () => {
   it("should return 401 for invalid login", async () => {
