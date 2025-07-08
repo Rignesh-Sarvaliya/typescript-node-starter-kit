@@ -13,8 +13,16 @@ import { ForgotPasswordSchema } from "../../requests/user/auth.request";
 
 const router = Router();
 
-router.post("/auth/register", validateRequest({ body: RegisterRequestSchema }), authenticationController.registerUser);
-router.post("/auth/login", validateRequest({ body: LoginRequestSchema }), authenticationController.loginUser);
+router.post(
+  "/auth/register",
+  validateRequest({ body: RegisterRequestSchema }),
+  authenticationController.registerUser
+);
+router.post(
+  "/auth/login",
+  validateRequest({ body: LoginRequestSchema }),
+  authenticationController.loginUser
+);
 router.post(
   "/auth/social-login",
   validateRequest({ body: SocialLoginRequestSchema }),
@@ -37,33 +45,3 @@ router.post(
   authenticationController.forgotPassword
 );
 export default router;
-
-/**
- * @openapi
- * /auth/login:
- *   post:
- *     summary: Login with email and password
- *     tags:
- *       - Auth
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 example: user@mail.com
- *               password:
- *                 type: string
- *                 example: secret123
- *     responses:
- *       200:
- *         description: Logged in successfully
- *       401:
- *         description: Invalid credentials
- */
