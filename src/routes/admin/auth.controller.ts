@@ -10,6 +10,7 @@ import { logAdminLogin } from "../../jobs/admin.jobs";
 import { AdminPassword } from "../../domain/valueObjects/adminPassword.vo";
 import { captureError } from "../../telemetry/sentry";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
+import { signJwt } from "../../utils/jwt";
 
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
@@ -28,6 +29,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
     const adminEntity = new AdminEntity(admin.id, admin.name, admin.email);
 
     await generateSession(req, admin.id, "admin");
+    const token = signJwt({ id: admin.id, role: "admin" });
     logAdminLogin(admin.id, admin.email);
 
     appEmitter.emit(APP_EVENTS.ADMIN_LOGGED_IN, {
@@ -39,6 +41,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
     return res.json({
       message: AdminMessages.loginSuccess,
       admin: formatAdminResponse(adminEntity),
+      token,
     });
   } catch (error) {
     captureError(error, "adminLogin");
