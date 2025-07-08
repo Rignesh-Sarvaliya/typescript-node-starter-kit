@@ -23,6 +23,7 @@ import { UserEntity } from "../../domain/entities/user.entity";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
 import { captureError } from "../../telemetry/sentry";
 import { issueAuthToken } from "../../utils/authToken";
+import { signJwt } from "../../utils/jwt";
 
 const prisma = new PrismaClient();
 
@@ -93,6 +94,7 @@ const loginUser = async (req: Request, res: Response) => {
       userRecord.email
     );
     const token = issueAuthToken(userRecord.id, "user");
+//     const token = signJwt({ id: userRecord.id, role: "user" });
 
     logLogin(emailVO.getValue());
     userEmitter.emit("user.loggedIn", {

@@ -11,6 +11,7 @@ import { AdminPassword } from "../../domain/valueObjects/adminPassword.vo";
 import { captureError } from "../../telemetry/sentry";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
 import { issueAuthToken } from "../../utils/authToken";
+import { signJwt } from "../../utils/jwt";
 
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
@@ -30,6 +31,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
 
     await generateSession(req, admin.id, "admin");
     const token = issueAuthToken(admin.id, "admin");
+//     const token = signJwt({ id: admin.id, role: "admin" });
     logAdminLogin(admin.id, admin.email);
 
     appEmitter.emit(APP_EVENTS.ADMIN_LOGGED_IN, {
