@@ -13,18 +13,16 @@ import { toggleUserStatusHandler } from "./user.controller";
 import { DeleteUserParamSchema } from "../../requests/admin/user.request";
 import { deleteUserHandler } from "./user.controller";
 
-
-
 const router = Router();
 
 router.get(
-    "/admin/users",
-    logRoute("ADMIN_USER_LIST"),
-    requireAdminAuth,
-    getAllUsersHandler
+  "/users",
+  logRoute("ADMIN_USER_LIST"),
+  requireAdminAuth,
+  getAllUsersHandler
 );
 router.post(
-  "/admin/users/:id/update",
+  "/users/:id/update",
   logRoute("ADMIN_USER_UPDATE"),
   requireAdminAuth,
   validateRequest({
@@ -34,21 +32,19 @@ router.post(
   updateUserHandler
 );
 router.get(
-  "/admin/users/:id/toggle",
+  "/users/:id/toggle",
   logRoute("ADMIN_USER_TOGGLE"),
   requireAdminAuth,
   validateRequest({ params: ToggleUserParamSchema }),
   toggleUserStatusHandler
 );
 
-
 router.get(
-  "/admin/users/:id/delete",
+  "/users/:id/delete",
   logRoute("ADMIN_USER_DELETE"),
   requireAdminAuth,
   validateRequest({ params: DeleteUserParamSchema }),
   deleteUserHandler
 );
-
 
 export default router;

@@ -11,25 +11,23 @@ import {
 } from "../../requests/admin/appVariable.request";
 import { updateAppVariableHandler } from "./appVariable.controller";
 
-
-
 const router = Router();
 
 router.get(
-  "/admin/app-variables",
+  "/app-variables",
   logRoute("ADMIN_APP_VARIABLES"),
   requireAdminAuth,
   getAppVariablesHandler
 );
 router.post(
-  "/admin/app-variables/store",
+  "/app-variables/store",
   logRoute("APP_VARIABLE_CREATE"),
   requireAdminAuth,
   validateRequest({ body: CreateAppVariableSchema }),
   createAppVariableHandler
 );
 router.post(
-  "/admin/app-variables/:id/update",
+  "/app-variables/:id/update",
   logRoute("APP_VARIABLE_UPDATE"),
   requireAdminAuth,
   validateRequest({

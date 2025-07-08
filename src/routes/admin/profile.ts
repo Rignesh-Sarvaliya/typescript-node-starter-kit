@@ -5,6 +5,6 @@ import { logRoute } from "../../decorators/logRoute";
 
 const router = Router();
 
-router.get("/admin/me", logRoute("ADMIN_ME"), requireAdminAuth, getAdminProfile);
+router.get("/me", logRoute("ADMIN_ME"), requireAdminAuth, getAdminProfile);
 
 export default router;

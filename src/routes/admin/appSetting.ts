@@ -14,26 +14,24 @@ import { updateAppSettingHandler } from "./appSetting.controller";
 import { DeleteAppSettingParamSchema } from "../../requests/admin/appSetting.request";
 import { deleteAppSettingHandler } from "./appSetting.controller";
 
-
-
 const router = Router();
 
 router.get(
-  "/admin/app-settings",
+  "/app-settings",
   logRoute("ADMIN_APP_SETTINGS"),
   requireAdminAuth,
   validateRequest({ query: GetAppSettingsRequestSchema }),
   getAppSettings
 );
 router.post(
-  "/admin/app-settings",
+  "/app-settings",
   logRoute("APP_SETTING_CREATE"),
   requireAdminAuth,
   validateRequest({ body: CreateAppSettingRequestSchema }),
   createAppSettingHandler
 );
 router.post(
-  "/admin/app-settings/:id/update",
+  "/app-settings/:id/update",
   logRoute("APP_SETTING_UPDATE"),
   requireAdminAuth,
   validateRequest({
@@ -43,7 +41,7 @@ router.post(
   updateAppSettingHandler
 );
 router.delete(
-  "/admin/app-settings/:id",
+  "/app-settings/:id",
   logRoute("APP_SETTING_DELETE"),
   requireAdminAuth,
   validateRequest({ params: DeleteAppSettingParamSchema }),

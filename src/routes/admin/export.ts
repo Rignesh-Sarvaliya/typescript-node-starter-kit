@@ -8,7 +8,7 @@ import { logRoute } from "../../decorators/logRoute";
 const router = Router();
 
 router.get(
-  "/admin/export/users/:type",
+  "/export/users/:type",
   logRoute("ADMIN_EXPORT_USERS"),
   requireAdminAuth,
   validateRequest({ params: ExportUserParamSchema }),
