@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Messages } from "../constants/messages";
+import { verifyAuthToken } from "../utils/authToken";
 import { verifyJwt } from "../utils/jwt";
 
 export const requireUserAuth = (
@@ -13,7 +14,8 @@ export const requireUserAuth = (
     const auth = req.headers.authorization;
     if (auth && auth.startsWith("Bearer ")) {
       const token = auth.substring(7);
-      const payload = verifyJwt<{ id: number; role: string }>(token);
+      const payload = verifyAuthToken<{ id: number; role: string }>(token);
+//       const payload = verifyJwt<{ id: number; role: string }>(token);
       if (payload) {
         user = { id: payload.id, role: payload.role as any };
       }
@@ -39,7 +41,8 @@ export const requireAdminAuth = (
     const auth = req.headers.authorization;
     if (auth && auth.startsWith("Bearer ")) {
       const token = auth.substring(7);
-      const payload = verifyJwt<{ id: number; role: string }>(token);
+      const payload = verifyAuthToken<{ id: number; role: string }>(token);
+//       const payload = verifyJwt<{ id: number; role: string }>(token);
       if (payload) {
         user = { id: payload.id, role: payload.role as any };
       }
