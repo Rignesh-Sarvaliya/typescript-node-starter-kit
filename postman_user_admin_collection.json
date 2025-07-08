@@ -8,6 +8,10 @@
     {
       "key": "base_url",
       "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": ""
     }
   ],
   "item": [
@@ -68,7 +72,20 @@
                   "host": ["{{base_url}}"],
                   "path": ["api", "auth", "login"]
                 }
-              }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "var json = pm.response.json();",
+                      "if (json.token) { pm.environment.set('token', json.token); }"
+                    ]
+                  }
+                }
+              ]
+            }
             },
             {
               "name": "Social Login",
@@ -153,17 +170,19 @@
         {
           "name": "Profile",
           "item": [
-            {
-              "name": "Get Profile",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/api/user/me",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "user", "me"]
+              {
+                "name": "Get Profile",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    { "key": "Authorization", "value": "Bearer {{token}}" }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/api/user/me",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "user", "me"]
+                  }
                 }
-              }
             },
             {
               "name": "Update Profile",
@@ -252,40 +271,54 @@
         {
           "name": "Auth",
           "item": [
-            {
-              "name": "Admin Login",
-              "request": {
-                "method": "POST",
-                "header": [
-                  { "key": "Content-Type", "value": "application/json" }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"adminpass\"\n}"
+              {
+                "name": "Admin Login",
+                "request": {
+                  "method": "POST",
+                  "header": [
+                    { "key": "Content-Type", "value": "application/json" }
+                  ],
+                  "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"adminpass\"\n}"
+                  },
+                  "url": {
+                    "raw": "{{base_url}}/api/admin/login",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "admin", "login"]
+                  }
                 },
-                "url": {
-                  "raw": "{{base_url}}/api/admin/login",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "login"]
-                }
+                "event": [
+                  {
+                    "listen": "test",
+                    "script": {
+                      "type": "text/javascript",
+                      "exec": [
+                        "var json = pm.response.json();",
+                        "if (json.token) { pm.environment.set('token', json.token); }"
+                      ]
+                    }
+                  }
+                ]
               }
-            }
           ]
         },
         {
           "name": "Profile",
           "item": [
-            {
-              "name": "Get Admin Profile",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/api/admin/me",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "me"]
+              {
+                "name": "Get Admin Profile",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    { "key": "Authorization", "value": "Bearer {{token}}" }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/api/admin/me",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "admin", "me"]
+                  }
                 }
-              }
             }
           ]
         },
