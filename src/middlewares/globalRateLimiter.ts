@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createClient } from "redis";
+import { error } from "../utils/responseWrapper";
 
 // In-memory rate limiting fallback
 const memoryStore = new Map<string, { count: number; resetTime: number }>();
@@ -51,11 +52,14 @@ export const globalRateLimiter = async (
       }
 
       if (current > limit) {
-        return res.status(429).json({
-          message: "Too many requests — please slow down.",
-          route: path,
-          retry_after: window,
-        });
+        return res
+          .status(429)
+          .json(
+            error("Too many requests — please slow down.", {
+              route: path,
+              retry_after: window,
+            })
+          );
       }
     } else {
       // Use in-memory store as fallback
@@ -68,11 +72,14 @@ export const globalRateLimiter = async (
       } else {
         record.count++;
         if (record.count > limit) {
-          return res.status(429).json({
-            message: "Too many requests — please slow down.",
-            route: path,
-            retry_after: window,
-          });
+          return res
+            .status(429)
+            .json(
+              error("Too many requests — please slow down.", {
+                route: path,
+                retry_after: window,
+              })
+            );
         }
       }
     }

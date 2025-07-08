@@ -12,6 +12,7 @@ import { captureError } from "../../telemetry/sentry";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
 import { issueAuthToken } from "../../utils/authToken";
 import { signJwt } from "../../utils/jwt";
+import { success, error } from "../../utils/responseWrapper";
 
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
@@ -19,13 +20,13 @@ export const loginAdmin = async (req: Request, res: Response) => {
 
     const admin = await findAdminByEmail(email);
     if (!admin)
-      return res.status(404).json({ message: AdminMessages.notFound });
+      return res.status(404).json(error(AdminMessages.notFound));
 
     const valid = await comparePassword(password, admin.password);
     if (!valid)
       return res
         .status(401)
-        .json({ message: AdminMessages.invalidCredentials });
+        .json(error(AdminMessages.invalidCredentials));
 
     const adminEntity = new AdminEntity(admin.id, admin.name, admin.email);
 
@@ -40,13 +41,14 @@ export const loginAdmin = async (req: Request, res: Response) => {
       timestamp: new Date(),
     });
 
-    return res.json({
-      message: AdminMessages.loginSuccess,
-      admin: formatAdminResponse(adminEntity),
-      token,
-    });
-  } catch (error) {
-    captureError(error, "adminLogin");
-    return res.status(500).json({ message: "Login failed" });
+    return res.json(
+      success(AdminMessages.loginSuccess, {
+        admin: formatAdminResponse(adminEntity),
+        token,
+      })
+    );
+  } catch (err) {
+    captureError(err, "adminLogin");
+    return res.status(500).json(error("Login failed"));
   }
 };

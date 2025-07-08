@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import { formatZodError } from "../utils/zodErrorFormatter";
+import { error } from "../utils/responseWrapper";
 
 export default function validateRequest({
   body,
@@ -19,13 +20,12 @@ export default function validateRequest({
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        return res.status(422).json({
-          message: "Validation failed",
-          errors: formatZodError(error),
-        });
+        return res
+          .status(422)
+          .json(error("Validation failed", formatZodError(error)));
       }
 
-      return res.status(500).json({ message: "Unexpected validation error" });
+      return res.status(500).json(error("Unexpected validation error"));
     }
   };
 }

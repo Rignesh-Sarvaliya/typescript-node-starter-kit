@@ -5,6 +5,7 @@ import { invalidateAuthToken } from "../../utils/authToken";
 import { logLogout } from "../../jobs/session.jobs";
 import { captureError } from "../../telemetry/sentry";
 import { Messages } from "../../constants/messages";
+import { success, error } from "../../utils/responseWrapper";
 
 export const logout = async (req: Request, res: Response) => {
   try {
@@ -15,9 +16,9 @@ export const logout = async (req: Request, res: Response) => {
     invalidateAuthToken(userId!);
     logLogout(userId!);
 
-    return res.json({ message: Messages.logoutSuccess });
-  } catch (error) {
-    captureError(error, "logout");
-    return res.status(500).json({ message: "Logout failed" });
+    return res.json(success(Messages.logoutSuccess));
+  } catch (err) {
+    captureError(err, "logout");
+    return res.status(500).json(error("Logout failed"));
   }
 };

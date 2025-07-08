@@ -11,6 +11,7 @@ import sessionConfig from "./config/session.config";
 import { globalRateLimiter } from "./middlewares/globalRateLimiter";
 import { globalErrorHandler } from "./middlewares/errorHandler";
 import { requestLogger } from "./middlewares/requestLogger";
+import { success, error } from "./utils/responseWrapper";
 // import "../events/listeners/user.listener";
 // import "../events/listeners/admin.listener";
 
@@ -50,9 +51,7 @@ export const startServer = async () => {
   app.use((req, res, next) => {
     if (typeof res.setHeader !== "function") {
       console.error("res.setHeader is not a function!", res);
-      return res
-        .status(500)
-        .json({ success: false, message: "res.setHeader is not a function" });
+      return res.status(500).json(error("res.setHeader is not a function"));
     }
     next();
   });
@@ -69,11 +68,7 @@ export const startServer = async () => {
 
   // root route
   app.get("/", (req, res) => {
-    // res.status(200).json({ message: "Hello World" });
-    res.status(200).json({
-      status: true,
-      message: "Hello World",
-    });
+    res.status(200).json(success("Hello World"));
   });
 
   // Health check

@@ -22,16 +22,17 @@ import {
   logUserToggled,
   logUserDeleted,
 } from "../../jobs/user.jobs";
+import { success, error } from "../../utils/responseWrapper";
 
 const prisma = new PrismaClient();
 
 export const getAllUsersHandler = async (req: Request, res: Response) => {
   try {
     const users = await getAllUsers();
-    return res.json({ users: formatUserListForAdmin(users) });
-  } catch (error) {
-    captureError(error, "getAllUsers");
-    return res.status(500).json({ message: "Failed to load users" });
+    return res.json(success("Users fetched", formatUserListForAdmin(users)));
+  } catch (err) {
+    captureError(err, "getAllUsers");
+    return res.status(500).json(error("Failed to load users"));
   }
 };
 
@@ -44,13 +45,12 @@ export const updateUserHandler = async (req: Request, res: Response) => {
 
     logUserUpdated(Number(id));
 
-    return res.json({
-      message: "User updated successfully",
-      user: formatUserForAdmin(updated),
-    });
-  } catch (error) {
-    captureError(error, "updateUser");
-    return res.status(500).json({ message: "Failed to update user" });
+    return res.json(
+      success("User updated successfully", formatUserForAdmin(updated))
+    );
+  } catch (err) {
+    captureError(err, "updateUser");
+    return res.status(500).json(error("Failed to update user"));
   }
 };
 
@@ -61,13 +61,12 @@ export const toggleUserStatusHandler = async (req: Request, res: Response) => {
 
     logUserToggled(user.id, user.status);
 
-    return res.json({
-      message: `User ${user.status ? "activated" : "deactivated"}`,
-      user: formatUserForAdmin(user),
-    });
-  } catch (error) {
-    captureError(error, "toggleUserStatus");
-    return res.status(500).json({ message: "Failed to toggle user" });
+    return res.json(
+      success(`User ${user.status ? "activated" : "deactivated"}`, formatUserForAdmin(user))
+    );
+  } catch (err) {
+    captureError(err, "toggleUserStatus");
+    return res.status(500).json(error("Failed to toggle user"));
   }
 };
 
@@ -78,12 +77,11 @@ export const deleteUserHandler = async (req: Request, res: Response) => {
 
     logUserDeleted(user.id);
 
-    return res.json({
-      message: "User deleted successfully",
-      user: formatUserForAdmin(user),
-    });
-  } catch (error) {
-    captureError(error, "deleteUser");
-    return res.status(500).json({ message: "Failed to delete user" });
+    return res.json(
+      success("User deleted successfully", formatUserForAdmin(user))
+    );
+  } catch (err) {
+    captureError(err, "deleteUser");
+    return res.status(500).json(error("Failed to delete user"));
   }
 };

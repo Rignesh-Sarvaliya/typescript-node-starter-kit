@@ -3,6 +3,7 @@ import { findAdminById } from "../../repositories/admin.repository";
 import { formatAdminResponse } from "../../resources/admin/admin.resource";
 import { AdminMessages } from "../../constants/messages";
 import { captureError } from "../../telemetry/sentry";
+import { success, error } from "../../utils/responseWrapper";
 
 export const getAdminProfile = async (req: Request, res: Response) => {
   try {
@@ -10,12 +11,12 @@ export const getAdminProfile = async (req: Request, res: Response) => {
     const admin = await findAdminById(adminId);
 
     if (!admin) {
-      return res.status(404).json({ message: AdminMessages.notFound });
+      return res.status(404).json(error(AdminMessages.notFound));
     }
 
-    return res.json({ admin: formatAdminResponse(admin) });
-  } catch (error) {
-    captureError(error, "getAdminProfile");
-    return res.status(500).json({ message: "Failed to load admin profile" });
+    return res.json(success("Admin fetched", formatAdminResponse(admin)));
+  } catch (err) {
+    captureError(err, "getAdminProfile");
+    return res.status(500).json(error("Failed to load admin profile"));
   }
 };

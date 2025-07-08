@@ -24,6 +24,7 @@ import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
 import { captureError } from "../../telemetry/sentry";
 import { issueAuthToken } from "../../utils/authToken";
 import { signJwt } from "../../utils/jwt";
+import { success, error } from "../../utils/responseWrapper";
 
 const prisma = new PrismaClient();
 
@@ -37,7 +38,7 @@ const registerUser = async (req: Request, res: Response) => {
 
     const existing = await findUserByEmail(emailVO.getValue());
     if (existing)
-      return res.status(409).json({ message: AuthMessages.emailExists });
+      return res.status(409).json(error(AuthMessages.emailExists));
 
     const hashed = await hashPassword(passwordVO.getValue());
 
@@ -58,13 +59,12 @@ const registerUser = async (req: Request, res: Response) => {
     userEmitter.emit("user.registered", { id: user.id, email });
 
     const userEntity = new UserEntity(user.id, user.name, user.email);
-    return res.json({
-      message: AuthMessages.registered,
-      user: formatUserResponse(userEntity),
-    });
-  } catch (error) {
-    captureError(error, "registerUser");
-    return res.status(500).json({ message: "Registration failed" });
+    return res.json(
+      success(AuthMessages.registered, formatUserResponse(userEntity))
+    );
+  } catch (err) {
+    captureError(err, "registerUser");
+    return res.status(500).json(error("Registration failed"));
   }
 };
 
@@ -75,7 +75,7 @@ const loginUser = async (req: Request, res: Response) => {
 
     const userRecord = await findUserByEmail(emailVO.getValue());
     if (!userRecord) {
-      return res.status(404).json({ message: AuthMessages.userNotFound });
+      return res.status(404).json(error(AuthMessages.userNotFound));
     }
 
     const isMatch = await comparePassword(
@@ -83,7 +83,7 @@ const loginUser = async (req: Request, res: Response) => {
       userRecord.password
     );
     if (!isMatch) {
-      return res.status(401).json({ message: AuthMessages.invalidCredentials });
+      return res.status(401).json(error(AuthMessages.invalidCredentials));
     }
 
     await generateSession(req, userRecord.id, "user");
@@ -102,24 +102,22 @@ const loginUser = async (req: Request, res: Response) => {
       email: userRecord.email,
     });
 
-    return res.json({
-      message: AuthMessages.login,
-      user: formatUserResponse(userEntity),
-      token,
-    });
-  } catch (error) {
-    captureError(error, "loginUser");
-    return res.status(500).json({ message: "Login failed" });
+    return res.json(
+      success(AuthMessages.login, { user: formatUserResponse(userEntity), token })
+    );
+  } catch (err) {
+    captureError(err, "loginUser");
+    return res.status(500).json(error("Login failed"));
   }
 };
 
 const socialLogin = async (req: Request, res: Response) => {
   try {
     // Social login is not supported by the current schema
-    return res.status(400).json({ message: "Social login is not supported." });
-  } catch (error) {
-    captureError(error, "socialLogin");
-    return res.status(500).json({ message: "Social login failed" });
+    return res.status(400).json(error("Social login is not supported."));
+  } catch (err) {
+    captureError(err, "socialLogin");
+    return res.status(500).json(error("Social login failed"));
   }
 };
 
@@ -133,10 +131,10 @@ const appleDetails = async (req: Request, res: Response) => {
     // Apple details lookup is not supported by the current schema
     return res
       .status(400)
-      .json({ message: "Apple details lookup is not supported." });
-  } catch (error) {
-    captureError(error, "appleDetails");
-    return res.status(500).json({ message: "Failed to fetch apple details" });
+      .json(error("Apple details lookup is not supported."));
+  } catch (err) {
+    captureError(err, "appleDetails");
+    return res.status(500).json(error("Failed to fetch apple details"));
   }
 };
 
@@ -151,12 +149,10 @@ const sendOtp = async (req: Request, res: Response) => {
     userEmitter.emit("otp.sent", { email, otp });
 
     // In real project, integrate email/SMS here
-    return res.json({
-      message: "OTP sent to email",
-    });
-  } catch (error) {
-    captureError(error, "sendOtp");
-    return res.status(500).json({ message: "Failed to send OTP" });
+    return res.json(success("OTP sent to email"));
+  } catch (err) {
+    captureError(err, "sendOtp");
+    return res.status(500).json(error("Failed to send OTP"));
   }
 };
 
@@ -166,7 +162,7 @@ const forgotPassword = async (req: Request, res: Response) => {
 
     const user = await findUserByEmail(emailVO.getValue());
     if (!user) {
-      return res.status(404).json({ message: "Email not found" });
+      return res.status(404).json(error("Email not found"));
     }
 
     const token = await generateResetToken(user.id);
@@ -175,10 +171,10 @@ const forgotPassword = async (req: Request, res: Response) => {
     logResetLink(emailVO.getValue(), resetUrl);
     userEmitter.emit("password.reset_link.sent", { email: user.email, token });
 
-    return res.json({ message: "Password reset link sent", resetUrl });
-  } catch (error) {
-    captureError(error, "forgotPassword");
-    return res.status(500).json({ message: "Failed to send reset link" });
+    return res.json(success("Password reset link sent", { resetUrl }));
+  } catch (err) {
+    captureError(err, "forgotPassword");
+    return res.status(500).json(error("Failed to send reset link"));
   }
 };
 
