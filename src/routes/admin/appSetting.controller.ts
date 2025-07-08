@@ -35,8 +35,8 @@ export const getAppSettings = async (req: Request, res: Response) => {
         pagination,
       })
     );
-  } catch (error) {
-    captureError(error, "getAppSettings");
+  } catch (err) {
+    captureError(err, "getAppSettings");
     return res.status(500).json(error("Failed to fetch app settings"));
   }
 };
@@ -53,8 +53,8 @@ export const createAppSettingHandler = async (req: Request, res: Response) => {
     return res.status(201).json(
       success("App setting created", formatAppSetting(setting))
     );
-  } catch (error) {
-    captureError(error, "createAppSetting");
+  } catch (err) {
+    captureError(err, "createAppSetting");
     return res.status(500).json(error("Failed to create app setting"));
   }
 };
@@ -72,8 +72,8 @@ export const updateAppSettingHandler = async (req: Request, res: Response) => {
     return res.json(
       success("App setting updated", formatAppSetting(setting))
     );
-  } catch (error) {
-    captureError(error, "updateAppSetting");
+  } catch (err) {
+    captureError(err, "updateAppSetting");
     return res.status(500).json(error("Failed to update app setting"));
   }
 };
@@ -88,8 +88,8 @@ export const deleteAppSettingHandler = async (req: Request, res: Response) => {
     logAppSettingDeleted(Number(id));
 
     return res.json(success("App setting deleted successfully"));
-  } catch (error) {
-    captureError(error, "deleteAppSetting");
+  } catch (err) {
+    captureError(err, "deleteAppSetting");
     return res.status(500).json(error("Failed to delete app setting"));
   }
 };
