@@ -5,6 +5,7 @@ import { logUserExport } from "../../jobs/export.jobs";
 import { Parser } from "json2csv";
 import XLSX from "xlsx";
 import { captureError } from "../../telemetry/sentry";
+import { error } from "../../utils/responseWrapper";
 
 export const exportUsersHandler = async (req: Request, res: Response) => {
   try {
@@ -35,9 +36,9 @@ export const exportUsersHandler = async (req: Request, res: Response) => {
       return res.send(buffer);
     }
 
-    return res.status(400).json({ message: "Unsupported export type" });
-  } catch (error) {
-    captureError(error, "exportUsers");
-    return res.status(500).json({ message: "Failed to export users" });
+    return res.status(400).json(error("Unsupported export type"));
+  } catch (err) {
+    captureError(err, "exportUsers");
+    return res.status(500).json(error("Failed to export users"));
   }
 };

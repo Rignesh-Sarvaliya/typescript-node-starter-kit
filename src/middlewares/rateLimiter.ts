@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createClient } from "redis";
+import { error } from "../utils/responseWrapper";
 
 // In-memory rate limiting fallback
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -40,9 +41,9 @@ export const rateLimiter = ({
           await redis.expire(key, windowInSeconds);
         }
         if (current > limit) {
-          return res.status(429).json({
-            message: "Too many requests. Please try again later.",
-          });
+          return res
+            .status(429)
+            .json(error("Too many requests. Please try again later."));
         }
       } else {
         // Use in-memory store for development
@@ -55,9 +56,9 @@ export const rateLimiter = ({
         } else {
           record.count++;
           if (record.count > limit) {
-            return res.status(429).json({
-              message: "Too many requests. Please try again later.",
-            });
+            return res
+              .status(429)
+              .json(error("Too many requests. Please try again later."));
           }
         }
       }

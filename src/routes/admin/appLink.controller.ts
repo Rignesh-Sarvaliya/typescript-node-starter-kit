@@ -2,14 +2,15 @@ import { Request, Response } from "express";
 import { getAppLinks } from "../../repositories/appLink.repository";
 import { formatAppLinksList } from "../../resources/admin/appLink.resource";
 import { captureError } from "../../telemetry/sentry";
+import { success, error } from "../../utils/responseWrapper";
 
 export const getAppLinksHandler = async (req: Request, res: Response) => {
   try {
     const links = await getAppLinks();
-    return res.json({ links: formatAppLinksList(links) });
-  } catch (error) {
-    captureError(error, "getAppLinks");
-    return res.status(500).json({ message: "Failed to load app links" });
+    return res.json(success("Links fetched", formatAppLinksList(links)));
+  } catch (err) {
+    captureError(err, "getAppLinks");
+    return res.status(500).json(error("Failed to load app links"));
   }
 };
 
@@ -30,12 +31,11 @@ export const updateAppLinkHandler = async (req: Request, res: Response) => {
 
     logAppLinkUpdate(Number(id));
 
-    return res.json({
-      message: "Link updated",
-      link: formatAppLink(updated),
-    });
-  } catch (error) {
-    captureError(error, "updateAppLink");
-    return res.status(500).json({ message: "Failed to update app link" });
+    return res.json(
+      success("Link updated", formatAppLink(updated))
+    );
+  } catch (err) {
+    captureError(err, "updateAppLink");
+    return res.status(500).json(error("Failed to update app link"));
   }
 };

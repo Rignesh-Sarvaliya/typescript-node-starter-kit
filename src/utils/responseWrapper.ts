@@ -1,26 +1,29 @@
 type SuccessResponse<T> = {
-  success: true;
-  data: T;
-  message?: string;
+  status: true;
+  message: string;
+  data?: T;
 };
 
-type ErrorResponse = {
-  success: false;
+type ErrorResponse<T> = {
+  status: false;
   message: string;
-  errors?: any;
+  data?: T;
 };
 
 export const success = <T = any>(
-  data: T,
-  message?: string
+  message: string,
+  data?: T
 ): SuccessResponse<T> => ({
-  success: true,
-  data,
+  status: true,
   message,
+  data,
 });
 
-export const error = (message: string, errors?: any): ErrorResponse => ({
-  success: false,
+export const error = <T = any>(
+  message: string,
+  data?: T
+): ErrorResponse<T> => ({
+  status: false,
   message,
-  errors,
+  data,
 });

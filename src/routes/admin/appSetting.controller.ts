@@ -16,6 +16,7 @@ import { logAppSettingUpdated } from "../../jobs/appSetting.jobs";
 import { DeleteAppSettingParamSchema } from "../../requests/admin/appSetting.request";
 import { softDeleteAppSetting } from "../../repositories/appSetting.repository";
 import { logAppSettingDeleted } from "../../jobs/appSetting.jobs";
+import { success, error } from "../../utils/responseWrapper";
 
 export const getAppSettings = async (req: Request, res: Response) => {
   try {
@@ -28,13 +29,15 @@ export const getAppSettings = async (req: Request, res: Response) => {
       order: parsed.order,
     });
 
-    return res.json({
-      settings: formatAppSettingsList(data),
-      pagination,
-    });
+    return res.json(
+      success("App settings fetched", {
+        settings: formatAppSettingsList(data),
+        pagination,
+      })
+    );
   } catch (error) {
     captureError(error, "getAppSettings");
-    return res.status(500).json({ message: "Failed to fetch app settings" });
+    return res.status(500).json(error("Failed to fetch app settings"));
   }
 };
 
@@ -47,13 +50,12 @@ export const createAppSettingHandler = async (req: Request, res: Response) => {
 
     logAppSettingCreated(body.app_type);
 
-    return res.status(201).json({
-      message: "App setting created",
-      setting: formatAppSetting(setting),
-    });
+    return res.status(201).json(
+      success("App setting created", formatAppSetting(setting))
+    );
   } catch (error) {
     captureError(error, "createAppSetting");
-    return res.status(500).json({ message: "Failed to create app setting" });
+    return res.status(500).json(error("Failed to create app setting"));
   }
 };
 
@@ -67,13 +69,12 @@ export const updateAppSettingHandler = async (req: Request, res: Response) => {
 
     logAppSettingUpdated(Number(id));
 
-    return res.json({
-      message: "App setting updated",
-      setting: formatAppSetting(setting),
-    });
+    return res.json(
+      success("App setting updated", formatAppSetting(setting))
+    );
   } catch (error) {
     captureError(error, "updateAppSetting");
-    return res.status(500).json({ message: "Failed to update app setting" });
+    return res.status(500).json(error("Failed to update app setting"));
   }
 };
 
@@ -86,9 +87,9 @@ export const deleteAppSettingHandler = async (req: Request, res: Response) => {
 
     logAppSettingDeleted(Number(id));
 
-    return res.json({ message: "App setting deleted successfully" });
+    return res.json(success("App setting deleted successfully"));
   } catch (error) {
     captureError(error, "deleteAppSetting");
-    return res.status(500).json({ message: "Failed to delete app setting" });
+    return res.status(500).json(error("Failed to delete app setting"));
   }
 };

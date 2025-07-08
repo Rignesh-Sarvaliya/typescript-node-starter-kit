@@ -19,13 +19,11 @@ export const getProfile = async (req: Request, res: Response) => {
     const user = await findUserById(userId!);
 
     if (!user) {
-      return res.status(404).json({ message: Messages.userNotFound });
+      return res.status(404).json(error(Messages.userNotFound));
     }
 
     // return res.json({ user: formatUserResponse(user) });
-    return res.json(
-      success(formatUserResponse(user), "User fetched successfully")
-    );
+    return res.json(success("User fetched successfully", formatUserResponse(user)));
   } catch (err) {
     captureError(err, "getProfile");
     // return res.status(500).json({ message: "Server error" });
@@ -55,12 +53,11 @@ export const updateProfile = async (req: Request, res: Response) => {
       updatedUser.email
     );
 
-    return res.json({
-      message: "Profile updated successfully",
-      user: formatUserResponse(userEntity),
-    });
-  } catch (error) {
-    captureError(error, "updateProfile");
-    return res.status(500).json({ message: "Update failed" });
+    return res.json(
+      success("Profile updated successfully", formatUserResponse(userEntity))
+    );
+  } catch (err) {
+    captureError(err, "updateProfile");
+    return res.status(500).json(error("Update failed"));
   }
 };

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { formatInitAppResponse } from "../../resources/user/init.resource";
+import { success, error } from "../../utils/responseWrapper";
 
 const prisma = new PrismaClient();
 
@@ -13,12 +14,12 @@ export const initApp = async (req: Request, res: Response) => {
     });
 
     if (!setting) {
-      return res.status(404).json({ message: "App settings not found" });
+      return res.status(404).json(error("App settings not found"));
     }
 
-    return res.json(formatInitAppResponse(setting));
-  } catch (error) {
-    console.error("InitApp Error:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.json(success("App settings fetched", formatInitAppResponse(setting)));
+  } catch (err) {
+    console.error("InitApp Error:", err);
+    return res.status(500).json(error("Server error"));
   }
 };

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Messages } from "../constants/messages";
 import { verifyAuthToken } from "../utils/authToken";
 import { verifyJwt } from "../utils/jwt";
+import { error } from "../utils/responseWrapper";
 
 export const requireUserAuth = (
   req: Request,
@@ -23,7 +24,7 @@ export const requireUserAuth = (
   }
 
   if (!user || user.role !== "user") {
-    return res.status(401).json({ message: Messages.unauthorized });
+    return res.status(401).json(error(Messages.unauthorized));
   }
 
   req.user = user;
@@ -50,7 +51,7 @@ export const requireAdminAuth = (
   }
 
   if (!user || user.role !== "admin") {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json(error("Unauthorized"));
   }
 
   req.user = user;
