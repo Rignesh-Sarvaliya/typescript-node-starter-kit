@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { destroySession } from "../../utils/session";
 import { clearAllUserSessionKeys } from "../../utils/passwordAttempt";
+import { invalidateAuthToken } from "../../utils/authToken";
 import { logLogout } from "../../jobs/session.jobs";
 import { captureError } from "../../telemetry/sentry";
 import { Messages } from "../../constants/messages";
@@ -11,6 +12,7 @@ export const logout = async (req: Request, res: Response) => {
 
     await clearAllUserSessionKeys(userId!);
     await destroySession(req);
+    invalidateAuthToken(userId!);
     logLogout(userId!);
 
     return res.json({ message: Messages.logoutSuccess });
