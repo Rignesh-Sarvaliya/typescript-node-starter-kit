@@ -7,7 +7,7 @@ import { logRoute } from "../../decorators/logRoute";
 const router = Router();
 
 router.post(
-  "/admin/login",
+  "login",
   logRoute("ADMIN_LOGIN"),
   validateRequest({ body: AdminLoginRequestSchema }),
   loginAdmin
