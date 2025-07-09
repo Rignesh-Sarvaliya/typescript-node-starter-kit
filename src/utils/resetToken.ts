@@ -38,3 +38,11 @@ export const getUserIdFromToken = async (token: string) => {
     return null;
   }
 };
+
+export const deleteResetToken = async (token: string) => {
+  if (redisClient && process.env.NODE_ENV === "production") {
+    await redisClient.del(`${ResetPasswordConstants.keyPrefix}${token}`);
+  } else {
+    resetTokenStore.delete(token);
+  }
+};

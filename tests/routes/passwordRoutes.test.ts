@@ -5,11 +5,13 @@ import * as hashUtils from '../../src/utils/hash';
 import * as attemptUtils from '../../src/utils/passwordAttempt';
 import * as passwordJobs from '../../src/jobs/password.jobs';
 import { userEmitter } from '../../src/events/emitters/userEmitter';
+import * as resetTokenUtils from '../../src/utils/resetToken';
 
 jest.mock('../../src/repositories/user.repository');
 jest.mock('../../src/utils/hash');
 jest.mock('../../src/utils/passwordAttempt');
 jest.mock('../../src/jobs/password.jobs');
+jest.mock('../../src/utils/resetToken');
 
 let server: AuthTestServer;
 
@@ -79,6 +81,44 @@ describe('Password Routes', () => {
       const res = await server.request
         .post('/user/change/password')
         .send({ current_password: 'oldpass', new_password: 'newpass' });
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('POST /reset-password/:token', () => {
+    it('should reset password successfully', async () => {
+      const unauth = createAuthTestServer(passwordRoutes, false);
+      (resetTokenUtils.getUserIdFromToken as jest.Mock).mockResolvedValueOnce('1');
+      (hashUtils.hashPassword as jest.Mock).mockResolvedValueOnce('hashed');
+      const res = await unauth.request
+        .post('/reset-password/abc')
+        .send({ new_password: 'newpass' });
+      expect(res.status).toBe(200);
+    });
+
+    it('should return 400 for bad token', async () => {
+      const unauth = createAuthTestServer(passwordRoutes, false);
+      (resetTokenUtils.getUserIdFromToken as jest.Mock).mockResolvedValueOnce(null);
+      const res = await unauth.request
+        .post('/reset-password/bad')
+        .send({ new_password: 'newpass' });
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 422 for invalid payload', async () => {
+      const unauth = createAuthTestServer(passwordRoutes, false);
+      const res = await unauth.request
+        .post('/reset-password/abc')
+        .send({ new_password: '1' });
+      expect(res.status).toBe(422);
+    });
+
+    it('should handle server errors', async () => {
+      const unauth = createAuthTestServer(passwordRoutes, false);
+      (resetTokenUtils.getUserIdFromToken as jest.Mock).mockRejectedValueOnce(new Error('fail'));
+      const res = await unauth.request
+        .post('/reset-password/abc')
+        .send({ new_password: 'newpass' });
       expect(res.status).toBe(500);
     });
   });
