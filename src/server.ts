@@ -21,6 +21,7 @@ import adminRoutes from "./api/admin.routes";
 import healthRoutes from "./api/health.routes";
 import docsRoutes from "./api/docs.routes";
 import bullBoardRoutes from "./api/bull.routes";
+import resetViewRoutes from "./routes/reset.view";
 
 export const startServer = async () => {
   const app = express();
@@ -70,6 +71,9 @@ export const startServer = async () => {
   app.get("/", (req, res) => {
     res.status(200).json(success("Hello World"));
   });
+
+  // Password reset view
+  app.use("/", resetViewRoutes);
 
   // Health check
   app.use("/api/health", healthRoutes);
