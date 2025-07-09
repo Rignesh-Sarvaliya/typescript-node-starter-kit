@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { ChangePasswordRequestSchema } from "../../requests/user/password.request";
+import {
+  ChangePasswordRequestSchema,
+  ResetPasswordBodySchema,
+  ResetPasswordParamsSchema,
+} from "../../requests/user/password.request";
 import { comparePassword, hashPassword } from "../../utils/hash";
 import {
   changeUserPassword,
@@ -15,6 +19,7 @@ import { logPasswordChange } from "../../jobs/password.jobs";
 import { captureError } from "../../telemetry/sentry";
 import { userEmitter } from "../../events/emitters/userEmitter";
 import { success, error } from "../../utils/responseWrapper";
+import { getUserIdFromToken, deleteResetToken } from "../../utils/resetToken";
 
 export const changePassword = async (req: Request, res: Response) => {
   try {
@@ -52,5 +57,28 @@ export const changePassword = async (req: Request, res: Response) => {
   } catch (err) {
     captureError(err, "changePassword");
     return res.status(500).json(error("Failed to change password"));
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { token } = ResetPasswordParamsSchema.parse(req.params);
+    const { new_password } = ResetPasswordBodySchema.parse(req.body);
+
+    const userId = await getUserIdFromToken(token);
+    if (!userId) return res.status(400).json(error("Invalid or expired token"));
+
+    const next = new Password(new_password);
+    const hashed = await hashPassword(next.getValue());
+
+    await changeUserPassword(Number(userId), hashed);
+    await deleteResetToken(token);
+
+    userEmitter.emit("user.passwordReset", { userId: Number(userId) });
+
+    return res.json(success("Password reset successfully"));
+  } catch (err) {
+    captureError(err, "resetPassword");
+    return res.status(500).json(error("Failed to reset password"));
   }
 };
