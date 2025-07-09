@@ -77,8 +77,8 @@ export const startServer = async () => {
   // User routes
   app.use("/api", userRoutes);
   app.use("/api/admin", adminRoutes);
-  app.use("/api/docs", docsRoutes);
-  app.use("/api/admin/queues", bullBoardRoutes);
+  // app.use("/api/docs", docsRoutes);
+  // app.use("/api/admin/queues", bullBoardRoutes);
 
   // Error handler (should be last)
   app.use(globalErrorHandler);
