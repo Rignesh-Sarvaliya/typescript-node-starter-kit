@@ -52,7 +52,7 @@ export const startServer = async () => {
   // Middleware
   app.use((req, res, next) => {
     if (typeof res.setHeader !== "function") {
-      console.error("res.setHeader is not a function!", res);
+      logger.error("res.setHeader is not a function!", res);
       return res.status(500).json(error("res.setHeader is not a function"));
     }
     next();

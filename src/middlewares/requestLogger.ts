@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { logger } from "../utils/logger";
 
 export const requestLogger = (
   req: Request,
@@ -22,7 +23,7 @@ export const requestLogger = (
     const url = req.originalUrl;
     const status = res.statusCode;
 
-    console.log(`[${label}] ${method} ${url} - ${status} - ${duration}ms`);
+    logger.info(`[${label}] ${method} ${url} - ${status} - ${duration}ms`);
   });
 
   next();

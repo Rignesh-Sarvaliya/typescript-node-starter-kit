@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { createClient } from "redis";
 import { error } from "../utils/responseWrapper";
 import { isProduction } from "../config/env";
+import { logger } from "../utils/logger";
 
 // In-memory rate limiting fallback
 const memoryStore = new Map<string, { count: number; resetTime: number }>();
@@ -13,12 +14,12 @@ if (isProduction) {
     redis = createClient({ url: process.env.REDIS_URL });
     redis.connect();
   } catch (error) {
-    console.warn(
+    logger.warn(
       "⚠️ Redis not available for rate limiting, using memory store"
     );
   }
 } else {
-  console.info("ℹ️ Redis disabled for rate limiting in local development");
+  logger.info("ℹ️ Redis disabled for rate limiting in local development");
 }
 
 // ⏱ Route-specific limits
@@ -87,7 +88,7 @@ export const globalRateLimiter = async (
 
     next();
   } catch (error) {
-    console.error("❌ RateLimiter error:", error);
+    logger.error("❌ RateLimiter error:", error);
     // Continue without rate limiting if there's an error
     next();
   }

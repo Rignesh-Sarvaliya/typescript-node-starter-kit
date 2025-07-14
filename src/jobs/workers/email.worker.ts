@@ -3,6 +3,7 @@ import { createClient } from "redis";
 import { sendMail } from "../../utils/sendMail";
 import { userWelcomeEmail } from "../../templates/mail/userWelcomeEmail";
 import { isProduction } from "../../config/env";
+import { logger } from "../../utils/logger";
 
 let connection: any = null;
 let emailWorker: any = null;
@@ -24,17 +25,17 @@ if (isProduction) {
     );
 
     emailWorker.on("completed", (job) => {
-      console.log(`✅ Job ${job.id} completed`);
+      logger.info(`✅ Job ${job.id} completed`);
     });
 
     emailWorker.on("failed", (job, err) => {
-      console.error(`❌ Job ${job?.id} failed:`, err.message);
+      logger.error(`❌ Job ${job?.id} failed:`, err.message);
     });
   } catch (error) {
-    console.warn("⚠️ Redis not available for email worker");
+    logger.warn("⚠️ Redis not available for email worker");
   }
 } else {
-  console.info("ℹ️ Email worker disabled in development mode");
+  logger.info("ℹ️ Email worker disabled in development mode");
 }
 
 export { emailWorker };

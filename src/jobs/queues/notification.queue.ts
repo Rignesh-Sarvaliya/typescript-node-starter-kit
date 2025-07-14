@@ -1,9 +1,10 @@
 import { Queue } from "bullmq";
 import { isProduction } from "../../config/env";
+import { logger } from "../../utils/logger";
 
 class MockQueue {
   async add() {
-    console.warn(
+    logger.warn(
       "ℹ️ Notification queue is disabled in development. Job not queued."
     );
   }

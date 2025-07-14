@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import RedisStore from "connect-redis";
 import { createClient } from "redis";
 import { isProduction } from "../config/env";
+import { logger } from "./logger";
 // Use user routes for testing APIs
 import router from "../api/user.routes";
 
@@ -18,10 +19,10 @@ if (isProduction) {
     redisClient = createClient();
     RedisSession = (RedisStore as any)(session);
   } catch (error) {
-    console.warn("⚠️ Redis not available for test setup");
+    logger.warn("⚠️ Redis not available for test setup");
   }
 } else {
-  console.info("ℹ️ Redis disabled for test setup in development");
+  logger.info("ℹ️ Redis disabled for test setup in development");
 }
 
 export const app = express();

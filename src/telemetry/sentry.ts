@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { isProduction } from "../config/env";
+import { logger } from "../utils/logger";
 
 export const initSentry = () => {
   if (!isProduction) return;
@@ -10,6 +11,6 @@ export const initSentry = () => {
 };
 
 export const captureError = (error: any, context?: string) => {
-  console.error(`[ERROR] ${context}:`, error);
+  logger.error(`[ERROR] ${context}:`, error);
   Sentry.captureException(error);
 };
