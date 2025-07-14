@@ -4,6 +4,7 @@ import session from "express-session";
 import { PrismaClient } from "@prisma/client";
 import RedisStore from "connect-redis";
 import { createClient } from "redis";
+import { isProduction } from "../config/env";
 // Use user routes for testing APIs
 import router from "../api/user.routes";
 
@@ -12,7 +13,7 @@ const prisma = new PrismaClient();
 let redisClient: any = null;
 let RedisSession: any = null;
 
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   try {
     redisClient = createClient();
     RedisSession = (RedisStore as any)(session);

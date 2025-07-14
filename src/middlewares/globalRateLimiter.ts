@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { createClient } from "redis";
 import { error } from "../utils/responseWrapper";
+import { isProduction } from "../config/env";
 
 // In-memory rate limiting fallback
 const memoryStore = new Map<string, { count: number; resetTime: number }>();
 
 let redis: any = null;
 // Only use Redis in production
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   try {
     redis = createClient({ url: process.env.REDIS_URL });
     redis.connect();

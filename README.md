@@ -128,6 +128,8 @@ REDIS_URL=redis://localhost:6379
 SESSION_SECRET=mysecret
 ```
 
+`src/config/env.ts` exposes helper flags like `isProduction` so the rest of the code can easily check the running environment without referencing `process.env` directly.
+
 ---
 
 ## 🔄 GitHub Actions CI

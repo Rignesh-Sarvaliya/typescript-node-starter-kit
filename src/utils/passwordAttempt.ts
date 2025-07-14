@@ -1,4 +1,5 @@
 import { redisClient } from "../config/redis.config";
+import { isProduction } from "../config/env";
 
 const ATTEMPT_PREFIX = "password_attempt:";
 const ATTEMPT_LIMIT = 5;
@@ -12,7 +13,7 @@ export const getAttemptKey = (userId: number) => `${ATTEMPT_PREFIX}${userId}`;
 export const recordFailedAttempt = async (userId: number) => {
   const key = getAttemptKey(userId);
 
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     const current = await redisClient.incr(key);
     if (current === 1) {
       await redisClient.expire(key, BLOCK_DURATION);
@@ -37,7 +38,7 @@ export const recordFailedAttempt = async (userId: number) => {
 export const clearFailedAttempts = async (userId: number) => {
   const key = getAttemptKey(userId);
 
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     await redisClient.del(key);
   } else {
     attemptStore.delete(key);
@@ -47,7 +48,7 @@ export const clearFailedAttempts = async (userId: number) => {
 export const isBlocked = async (userId: number): Promise<boolean> => {
   const key = getAttemptKey(userId);
 
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     const attempts = Number(await redisClient.get(key)) || 0;
     return attempts >= ATTEMPT_LIMIT;
   } else {
@@ -61,7 +62,7 @@ export const isBlocked = async (userId: number): Promise<boolean> => {
 };
 
 export const clearAllUserSessionKeys = async (userId: number) => {
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     await redisClient.del(`password_attempt:${userId}`);
     await redisClient.del(`otp_attempt:${userId}`);
   } else {

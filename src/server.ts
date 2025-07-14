@@ -4,6 +4,7 @@ import session from "express-session";
 import { logger } from "./utils/logger";
 import { redisClient } from "./config/redis.config";
 import RedisStore from "connect-redis";
+import { isProduction } from "./config/env";
 import { loadLocales } from "./utils/i18n";
 // import { errorHandler } from "./middlewares/errorHandler";
 import corsConfig from "./config/cors.config";
@@ -29,7 +30,7 @@ export const startServer = async () => {
 
   // Try to connect to Redis, but don't fail if it's not available
   let redisStore: any = undefined;
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     try {
       if (
         redisClient.status !== "ready" &&

@@ -1,5 +1,6 @@
 import { redisClient } from "../config/redis.config";
 import { OtpConstants } from "../constants/otp";
+import { isProduction } from "../config/env";
 
 // In-memory OTP store for development
 const otpStore = new Map<string, { otp: string; expiry: number }>();
@@ -10,7 +11,7 @@ export const generateOtp = () =>
 export const saveOtpToRedis = async (email: string, otp: string) => {
   const key = `${OtpConstants.keyPrefix}${email}`;
 
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     await redisClient.set(key, otp, "EX", OtpConstants.expirySeconds);
   } else {
     // Use in-memory store for development
@@ -20,7 +21,7 @@ export const saveOtpToRedis = async (email: string, otp: string) => {
 };
 
 export const getOtpFromRedis = async (email: string) => {
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     return redisClient.get(`${OtpConstants.keyPrefix}${email}`);
   } else {
     // Use in-memory store for development

@@ -1,7 +1,9 @@
 // Conditional Redis import to avoid connection attempts in development
+import { isProduction } from "./env";
+
 let redisClient: any = null;
 
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   try {
     const Redis = require("ioredis");
     redisClient = new Redis({

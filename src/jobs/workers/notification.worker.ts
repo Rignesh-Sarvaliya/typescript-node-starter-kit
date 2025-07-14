@@ -1,10 +1,11 @@
 import { Worker } from "bullmq";
 import { createClient } from "redis";
+import { isProduction } from "../../config/env";
 
 let connection: any = null;
 let notificationWorker: any = null;
 
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   try {
     connection = createClient({ url: process.env.REDIS_URL });
     notificationWorker = new Worker(
