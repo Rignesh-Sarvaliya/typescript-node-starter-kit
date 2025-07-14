@@ -14,10 +14,6 @@ prisma/dev.db
 prisma/test.db
 prisma/migrations/
 
-# Docker
-docker-compose.override.yml
-start.sh
-
 # VSCode / Editor
 .vscode/
 .idea/
