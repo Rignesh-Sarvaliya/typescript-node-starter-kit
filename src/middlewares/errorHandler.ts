@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { error } from "../utils/responseWrapper";
 import { captureError } from "../telemetry/sentry"; // already used in your controllers
+import { logger } from "../utils/logger";
 
 export const globalErrorHandler = (
   err: any,
@@ -8,7 +9,7 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error("🔥 Unhandled Error:", err);
+  logger.error("🔥 Unhandled Error:", err);
 
   // Send to Sentry or monitoring
   captureError(err, req.originalUrl);

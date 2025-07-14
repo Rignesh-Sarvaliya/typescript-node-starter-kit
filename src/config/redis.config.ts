@@ -1,5 +1,6 @@
 // Conditional Redis import to avoid connection attempts in development
 import { isProduction } from "./env";
+import { logger } from "../utils/logger";
 
 let redisClient: any = null;
 
@@ -11,13 +12,13 @@ if (isProduction) {
       port: Number(process.env.REDIS_PORT) || 6379,
       password: process.env.REDIS_PASSWORD || undefined,
     });
-    console.info("✅ Redis client created for production");
+    logger.info("✅ Redis client created for production");
   } catch (error) {
-    console.warn("⚠️ Failed to create Redis client:", error);
+    logger.warn("⚠️ Failed to create Redis client:", error);
     redisClient = null;
   }
 } else {
-  console.info("ℹ️ Redis client disabled for development");
+  logger.info("ℹ️ Redis client disabled for development");
 }
 
 export { redisClient };

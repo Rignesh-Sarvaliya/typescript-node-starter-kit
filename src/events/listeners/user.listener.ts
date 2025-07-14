@@ -2,9 +2,10 @@ import { appEmitter, APP_EVENTS } from "../emitters/appEmitter";
 import { sendMail } from "../../utils/sendMail";
 import { userWelcomeEmail } from "../../templates/mail/userWelcomeEmail";
 import { emailQueue } from "../../jobs/queues/email.queue";
+import { logger } from "../../utils/logger";
 
 appEmitter.on(APP_EVENTS.USER_REGISTERED, (payload) => {
-  console.log("📩 New user registered:", payload.email);
+  logger.info("📩 New user registered:", payload.email);
   // Optionally send welcome email or track analytics
 });
 
