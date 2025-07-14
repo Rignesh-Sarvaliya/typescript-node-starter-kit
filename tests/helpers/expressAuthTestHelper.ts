@@ -9,13 +9,14 @@ export interface AuthTestServer {
 export const createAuthTestServer = (
   router: Router,
   authenticated = true,
-  basePath = '/'
+  basePath = '/',
+  role: 'user' | 'admin' = 'user'
 ): AuthTestServer => {
   const app = express();
   app.use(express.json());
   if (authenticated) {
     app.use((req, _res, next) => {
-      (req as any).session = { user: { id: 1, role: 'user' } };
+      (req as any).session = { user: { id: 1, role } };
       next();
     });
   }
