@@ -157,6 +157,10 @@ npm run build
 npm start
 ```
 
+### Health Check
+
+The server exposes a simple health check at `/api/health` that reports uptime and version information.
+
 ---
 
 ## ✨ Built With
@@ -166,6 +170,7 @@ npm start
 - Prisma ORM + PostgreSQL
 - Redis
 - Zod (validation)
+- Helmet & compression
 - Supertest + Jest (testing)
 - Sentry (telemetry-ready)
 - Modular folder structure (DDD/clean arch)

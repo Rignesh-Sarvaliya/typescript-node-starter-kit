@@ -1,4 +1,6 @@
 import express from "express";
+import helmet from "helmet";
+import compression from "compression";
 import { createServer } from "http";
 import session from "express-session";
 import { logger } from "./utils/logger";
@@ -24,7 +26,9 @@ import docsRoutes from "./api/docs.routes";
 import bullBoardRoutes from "./api/bull.routes";
 import resetViewRoutes from "./routes/reset.view";
 
-export const startServer = async () => {
+import type { Server } from "http";
+
+export const startServer = async (): Promise<Server> => {
   const app = express();
   const httpServer = createServer(app);
 
@@ -58,6 +62,8 @@ export const startServer = async () => {
     next();
   });
   app.use(corsConfig);
+  app.use(helmet());
+  app.use(compression());
   app.use(express.json());
   // app.use(
   //   session({
@@ -89,7 +95,12 @@ export const startServer = async () => {
   app.use(globalErrorHandler);
 
   const PORT = process.env.PORT || 3000;
-  httpServer.listen(PORT, () => {
-    logger.info(`🚀 Server running on http://localhost:${PORT}`);
+  await new Promise<void>((resolve) => {
+    httpServer.listen(PORT, () => {
+      logger.info(`🚀 Server running on http://localhost:${PORT}`);
+      resolve();
+    });
   });
+
+  return httpServer;
 };
