@@ -1,4 +1,5 @@
 import { Queue } from "bullmq";
+import { isProduction } from "../../config/env";
 
 class MockQueue {
   async add() {
@@ -9,7 +10,7 @@ class MockQueue {
 }
 
 export const emailQueue =
-  process.env.NODE_ENV === "production"
+  isProduction
     ? new Queue("email", {
         connection: {
           host: process.env.REDIS_HOST || "localhost",

@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { createClient } from "redis";
 import { error } from "../utils/responseWrapper";
+import { isProduction } from "../config/env";
 
 // In-memory rate limiting fallback
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
 let redis: any = null;
 // Only use Redis in production
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   try {
     redis = createClient({ url: process.env.REDIS_URL });
     redis.connect();
@@ -34,7 +35,7 @@ export const rateLimiter = ({
       const identifier = req.user?.id || req.ip || "unknown";
       const key = `${keyPrefix}:${identifier}`;
 
-      if (redis && process.env.NODE_ENV === "production") {
+      if (redis && isProduction) {
         // Use Redis if available
         const current = await redis.incr(key);
         if (current === 1) {

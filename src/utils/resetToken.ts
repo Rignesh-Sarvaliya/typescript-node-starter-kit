@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { redisClient } from "../config/redis.config";
 import { ResetPasswordConstants } from "../constants/reset";
+import { isProduction } from "../config/env";
 
 // In-memory reset token store for development
 const resetTokenStore = new Map<string, { userId: string; expiry: number }>();
@@ -9,7 +10,7 @@ export const generateResetToken = async (userId: number): Promise<string> => {
   const token = randomUUID();
   const key = `${ResetPasswordConstants.keyPrefix}${token}`;
 
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     await redisClient.set(
       key,
       userId.toString(),
@@ -25,7 +26,7 @@ export const generateResetToken = async (userId: number): Promise<string> => {
 };
 
 export const getUserIdFromToken = async (token: string) => {
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     return redisClient.get(`${ResetPasswordConstants.keyPrefix}${token}`);
   } else {
     // Use in-memory store for development
@@ -40,7 +41,7 @@ export const getUserIdFromToken = async (token: string) => {
 };
 
 export const deleteResetToken = async (token: string) => {
-  if (redisClient && process.env.NODE_ENV === "production") {
+  if (redisClient && isProduction) {
     await redisClient.del(`${ResetPasswordConstants.keyPrefix}${token}`);
   } else {
     resetTokenStore.delete(token);

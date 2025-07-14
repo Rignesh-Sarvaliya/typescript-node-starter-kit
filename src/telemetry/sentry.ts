@@ -1,7 +1,8 @@
 import * as Sentry from "@sentry/node";
+import { isProduction } from "../config/env";
 
 export const initSentry = () => {
-  if (process.env.NODE_ENV !== "production") return;
+  if (!isProduction) return;
   Sentry.init({
     dsn: process.env.SENTRY_DSN || "",
     tracesSampleRate: 1.0,

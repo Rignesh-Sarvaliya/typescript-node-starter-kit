@@ -2,11 +2,12 @@ import { Worker } from "bullmq";
 import { createClient } from "redis";
 import { sendMail } from "../../utils/sendMail";
 import { userWelcomeEmail } from "../../templates/mail/userWelcomeEmail";
+import { isProduction } from "../../config/env";
 
 let connection: any = null;
 let emailWorker: any = null;
 
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   try {
     connection = createClient({ url: process.env.REDIS_URL });
     emailWorker = new Worker(
