@@ -9,13 +9,13 @@ import exportRoutes from "../routes/admin/export";
 
 const router = Router();
 
-router.use("/", authRoutes);
+router.use("/auth", authRoutes);
 router.use("/", profileRoutes);
 router.use("/", appSettingRoutes);
 router.use("/", appLinkRoutes);
 router.use("/", appVariableRoutes);
-router.use("/", userRoutes);
-router.use("/", exportRoutes);
+router.use("/user", userRoutes);
+router.use("/user", exportRoutes);
 
 
 

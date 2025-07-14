@@ -6,10 +6,13 @@ export interface TestServer {
   request: SuperTest<Test>;
 }
 
-export const createTestServer = (router: Router): TestServer => {
+export const createTestServer = (
+  router: Router,
+  basePath = '/'
+): TestServer => {
   const app = express();
   app.use(express.json());
-  app.use('/', router);
+  app.use(basePath, router);
   return { app, request: request(app) };
 };
 

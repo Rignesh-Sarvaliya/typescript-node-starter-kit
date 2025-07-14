@@ -16,7 +16,7 @@ jest.mock('../../src/utils/resetToken');
 let server: AuthTestServer;
 
 beforeAll(() => {
-  server = createAuthTestServer(passwordRoutes);
+  server = createAuthTestServer(passwordRoutes, true, '/api/user');
 });
 
 beforeEach(() => {
@@ -24,27 +24,27 @@ beforeEach(() => {
 });
 
 describe('Password Routes', () => {
-  describe('POST /user/change/password', () => {
+  describe('POST /api/user/change/password', () => {
     it('should change password successfully', async () => {
       (attemptUtils.isBlocked as jest.Mock).mockResolvedValueOnce(false);
       (userRepo.findUserWithPasswordById as jest.Mock).mockResolvedValueOnce({ id: 1, password: 'hashed' });
       (hashUtils.comparePassword as jest.Mock).mockResolvedValueOnce(true);
       (hashUtils.hashPassword as jest.Mock).mockResolvedValueOnce('newhash');
       const res = await server.request
-        .post('/user/change/password')
+        .post('/api/user/change/password')
         .send({ current_password: 'oldpass', new_password: 'newpass' });
       expect(res.status).toBe(200);
     });
 
     it('should return 422 for invalid payload', async () => {
-      const res = await server.request.post('/user/change/password').send({ current_password: '1', new_password: '2' });
+      const res = await server.request.post('/api/user/change/password').send({ current_password: '1', new_password: '2' });
       expect(res.status).toBe(422);
     });
 
     it('should return 429 when blocked', async () => {
       (attemptUtils.isBlocked as jest.Mock).mockResolvedValueOnce(true);
       const res = await server.request
-        .post('/user/change/password')
+        .post('/api/user/change/password')
         .send({ current_password: 'oldpass', new_password: 'newpass' });
       expect(res.status).toBe(429);
     });
@@ -53,7 +53,7 @@ describe('Password Routes', () => {
       (attemptUtils.isBlocked as jest.Mock).mockResolvedValueOnce(false);
       (userRepo.findUserWithPasswordById as jest.Mock).mockResolvedValueOnce(null);
       const res = await server.request
-        .post('/user/change/password')
+        .post('/api/user/change/password')
         .send({ current_password: 'oldpass', new_password: 'newpass' });
       expect(res.status).toBe(404);
     });
@@ -63,15 +63,15 @@ describe('Password Routes', () => {
       (userRepo.findUserWithPasswordById as jest.Mock).mockResolvedValueOnce({ id: 1, password: 'hashed' });
       (hashUtils.comparePassword as jest.Mock).mockResolvedValueOnce(false);
       const res = await server.request
-        .post('/user/change/password')
+        .post('/api/user/change/password')
         .send({ current_password: 'oldpass', new_password: 'newpass' });
       expect(res.status).toBe(401);
     });
 
     it('should return 401 without session', async () => {
-      const unauth = createAuthTestServer(passwordRoutes, false);
+      const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       const res = await unauth.request
-        .post('/user/change/password')
+        .post('/api/user/change/password')
         .send({ current_password: 'oldpass', new_password: 'newpass' });
       expect(res.status).toBe(401);
     });
@@ -79,45 +79,45 @@ describe('Password Routes', () => {
     it('should handle server errors', async () => {
       (attemptUtils.isBlocked as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await server.request
-        .post('/user/change/password')
+        .post('/api/user/change/password')
         .send({ current_password: 'oldpass', new_password: 'newpass' });
       expect(res.status).toBe(500);
     });
   });
 
-  describe('POST /reset-password/:token', () => {
+  describe('POST /api/user/reset-password/:token', () => {
     it('should reset password successfully', async () => {
-      const unauth = createAuthTestServer(passwordRoutes, false);
+      const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       (resetTokenUtils.getUserIdFromToken as jest.Mock).mockResolvedValueOnce('1');
       (hashUtils.hashPassword as jest.Mock).mockResolvedValueOnce('hashed');
       const res = await unauth.request
-        .post('/reset-password/abc')
+        .post('/api/user/reset-password/abc')
         .send({ new_password: 'newpass' });
       expect(res.status).toBe(200);
     });
 
     it('should return 400 for bad token', async () => {
-      const unauth = createAuthTestServer(passwordRoutes, false);
+      const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       (resetTokenUtils.getUserIdFromToken as jest.Mock).mockResolvedValueOnce(null);
       const res = await unauth.request
-        .post('/reset-password/bad')
+        .post('/api/user/reset-password/bad')
         .send({ new_password: 'newpass' });
       expect(res.status).toBe(400);
     });
 
     it('should return 422 for invalid payload', async () => {
-      const unauth = createAuthTestServer(passwordRoutes, false);
+      const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       const res = await unauth.request
-        .post('/reset-password/abc')
+        .post('/api/user/reset-password/abc')
         .send({ new_password: '1' });
       expect(res.status).toBe(422);
     });
 
     it('should handle server errors', async () => {
-      const unauth = createAuthTestServer(passwordRoutes, false);
+      const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       (resetTokenUtils.getUserIdFromToken as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await unauth.request
-        .post('/reset-password/abc')
+        .post('/api/user/reset-password/abc')
         .send({ new_password: 'newpass' });
       expect(res.status).toBe(500);
     });

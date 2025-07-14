@@ -8,9 +8,9 @@ import { updateProfile } from "./profile.controller";
 
 const router = Router();
 
-router.get("/user/me", logRoute("USER_ME"), requireUserAuth, getProfile);
+router.get("/me", logRoute("USER_ME"), requireUserAuth, getProfile);
 router.post(
-  "/user/update",
+  "/update",
   logRoute("USER_UPDATE"),
   requireUserAuth,
   validateRequest({ body: UpdateProfileRequestSchema }),

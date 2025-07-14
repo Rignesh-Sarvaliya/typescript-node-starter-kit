@@ -5,6 +5,6 @@ import { logRoute } from "../../decorators/logRoute";
 
 const router = Router();
 
-router.get("/user/logout", logRoute("LOGOUT"), requireUserAuth, logout);
+router.get("/logout", logRoute("LOGOUT"), requireUserAuth, logout);
 
 export default router;

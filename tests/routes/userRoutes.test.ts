@@ -9,7 +9,7 @@ jest.mock('../../src/repositories/notification.repository');
 let server: AuthTestServer;
 
 beforeAll(() => {
-  server = createAuthTestServer(userRoutes);
+  server = createAuthTestServer(userRoutes, true, '/api/user');
 });
 
 beforeEach(() => {
@@ -23,20 +23,20 @@ beforeEach(() => {
 });
 
 describe('User Router', () => {
-  it('should mount /auth routes', async () => {
-    const res = await server.request.post('/auth/login').send({ email: 'a@b.com', password: 'secret123' });
+  it('should mount /api/user/auth routes', async () => {
+    const res = await server.request.post('/api/user/auth/login').send({ email: 'a@b.com', password: 'secret123' });
     expect(res.status).not.toBe(404);
   });
 
   it('should mount /user/me route', async () => {
     (userRepo.findUserById as jest.Mock).mockResolvedValueOnce({ id:1, name:'J', email:'a@b.com' });
-    const res = await server.request.get('/user/me');
+    const res = await server.request.get('/api/user/me');
     expect(res.status).not.toBe(404);
   });
 
   it('should mount notification routes', async () => {
     (notifRepo.findUserNotifications as jest.Mock).mockResolvedValueOnce([]);
-    const res = await server.request.get('/user/notifications');
+    const res = await server.request.get('/api/user/notifications');
     expect(res.status).not.toBe(404);
   });
 });

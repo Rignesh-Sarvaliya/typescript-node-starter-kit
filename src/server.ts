@@ -86,7 +86,7 @@ export const startServer = async (): Promise<Server> => {
   app.use("/api/health", healthRoutes);
 
   // User routes
-  app.use("/api", userRoutes);
+  app.use("/api/user", userRoutes);
   app.use("/api/admin", adminRoutes);
   // app.use("/api/docs", docsRoutes);
   // app.use("/api/admin/queues", bullBoardRoutes);
