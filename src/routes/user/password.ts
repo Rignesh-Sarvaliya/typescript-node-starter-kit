@@ -12,7 +12,7 @@ import { logRoute } from "../../decorators/logRoute";
 const router = Router();
 
 router.post(
-  "/user/change/password",
+  "/change/password",
   logRoute("CHANGE_PASSWORD"),
   requireUserAuth,
   validateRequest({ body: ChangePasswordRequestSchema }),

@@ -10,13 +10,13 @@ import { clearAllNotifications } from "./notification.controller";
 const router = Router();
 
 router.get(
-  "/user/notifications",
+  "/notifications",
   logRoute("USER_NOTIFICATIONS"),
   requireUserAuth,
   getNotifications
 );
 router.get(
-  "/user/notifications/status/change/:status",
+  "/notifications/status/change/:status",
   logRoute("NOTIF_STATUS_CHANGE"),
   requireUserAuth,
   validateRequest({ params: NotificationStatusParamSchema }),
@@ -24,7 +24,7 @@ router.get(
 );
 
 router.get(
-  "/user/notifications/clear-all",
+  "/notifications/clear-all",
   logRoute("NOTIF_CLEAR_ALL"),
   requireUserAuth,
   clearAllNotifications

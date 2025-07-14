@@ -6,7 +6,11 @@ export interface AuthTestServer {
   request: SuperTest<Test>;
 }
 
-export const createAuthTestServer = (router: Router, authenticated = true): AuthTestServer => {
+export const createAuthTestServer = (
+  router: Router,
+  authenticated = true,
+  basePath = '/'
+): AuthTestServer => {
   const app = express();
   app.use(express.json());
   if (authenticated) {
@@ -15,6 +19,6 @@ export const createAuthTestServer = (router: Router, authenticated = true): Auth
       next();
     });
   }
-  app.use('/', router);
+  app.use(basePath, router);
   return { app, request: request(app) };
 };
