@@ -37,7 +37,7 @@ export const changePassword = asyncHandler(
     if (!user) return res.status(404).json(error("User not found"));
 
     const current = new Password(current_password);
-    const next = new Password(new_password);
+    const nextPassword = new Password(new_password);
 
     const match = await comparePassword(current.getValue(), user.password);
     if (!match) {
@@ -45,7 +45,7 @@ export const changePassword = asyncHandler(
       return res.status(401).json(error("Current password is incorrect"));
     }
 
-    const hashed = await hashPassword(next.getValue());
+    const hashed = await hashPassword(nextPassword.getValue());
 
     await changeUserPassword(userId, hashed);
     await clearFailedAttempts(userId);
@@ -65,8 +65,8 @@ export const resetPassword = asyncHandler(
     const userId = await getUserIdFromToken(token);
     if (!userId) return res.status(400).json(error("Invalid or expired token"));
 
-    const next = new Password(new_password);
-    const hashed = await hashPassword(next.getValue());
+    const nextPassword = new Password(new_password);
+    const hashed = await hashPassword(nextPassword.getValue());
 
     await changeUserPassword(Number(userId), hashed);
     await deleteResetToken(token);
