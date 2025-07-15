@@ -32,7 +32,7 @@ export const rateLimiter = ({
       next();
     } catch (error) {
       console.error("Rate limiter error:", error);
-      return res.status(500).json({ message: "Rate limiting failed" });
+      return res.fail("Rate limiting failed");
     }
   };
 };

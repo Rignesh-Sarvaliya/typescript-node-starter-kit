@@ -26,7 +26,7 @@ export const changePassword = async (req: Request, res: Response) => {
     const match = await comparePassword(current.getValue(), user.password);
     if (!match) {
       await recordFailedAttempt(userId);
-      return res.status(401).json({ message: "Current password is incorrect" });
+      return res.unauthorized("Current password is incorrect");
     }
 
     const hashed = await hashPassword(next.getValue());
@@ -40,6 +40,6 @@ export const changePassword = async (req: Request, res: Response) => {
     return res.json({ message: "Password changed successfully" });
   } catch (error) {
     captureError(error, "changePassword");
-    return res.status(500).json({ message: "Failed to change password" });
+    return res.fail("Failed to change password");
   }
 };

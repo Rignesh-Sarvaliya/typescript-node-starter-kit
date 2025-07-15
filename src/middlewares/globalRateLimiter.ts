@@ -44,6 +44,6 @@ export const globalRateLimiter = async (
     next();
   } catch (error) {
     console.error("❌ RateLimiter error:", error);
-    return res.status(500).json({ message: "Rate limiter failed" });
+    return res.fail("Rate limiter failed");
   }
 };

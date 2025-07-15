@@ -19,7 +19,7 @@ export const getAllUsersHandler = async (req: Request, res: Response) => {
     return res.json({ users: formatUserListForAdmin(users) });
   } catch (error) {
     captureError(error, "getAllUsers");
-    return res.status(500).json({ message: "Failed to load users" });
+    return res.fail("Failed to load users");
   }
 };
 
@@ -49,7 +49,7 @@ export const updateUserHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "updateUser");
-    return res.status(500).json({ message: "Failed to update user" });
+    return res.fail("Failed to update user");
   }
 };
 
@@ -70,7 +70,7 @@ export const toggleUserStatusHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "toggleUserStatus");
-    return res.status(500).json({ message: "Failed to toggle user" });
+    return res.fail("Failed to toggle user");
   }
 };
 
@@ -88,6 +88,6 @@ export const deleteUserHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "deleteUser");
-    return res.status(500).json({ message: "Failed to delete user" });
+    return res.fail("Failed to delete user");
   }
 };

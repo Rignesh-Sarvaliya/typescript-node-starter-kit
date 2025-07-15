@@ -21,7 +21,7 @@ export const getAppVariablesHandler = async (req: Request, res: Response) => {
     return res.json({ variables: formatAppVariableList(vars) });
   } catch (error) {
     captureError(error, "getAppVariables");
-    return res.status(500).json({ message: "Failed to load app variables" });
+    return res.fail("Failed to load app variables");
   }
 };
 
@@ -38,7 +38,7 @@ export const createAppVariableHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "createAppVariable");
-    return res.status(500).json({ message: "Failed to create app variable" });
+    return res.fail("Failed to create app variable");
   }
 };
 
@@ -56,6 +56,6 @@ export const updateAppVariableHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "updateAppVariable");
-    return res.status(500).json({ message: "Failed to update app variable" });
+    return res.fail("Failed to update app variable");
   }
 };

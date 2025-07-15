@@ -24,7 +24,7 @@ export const getProfile = async (req: Request, res: Response) => {
   } catch (err) {
     captureError(err, "getProfile");
     // return res.status(500).json({ message: "Server error" });
-    return res.status(500).json(error("Failed to load profile"));
+    return res.fail("Failed to load profile");
 
   }
 };
@@ -50,6 +50,6 @@ export const updateProfile = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "updateProfile");
-    return res.status(500).json({ message: "Update failed" });
+    return res.fail("Update failed");
   }
 };

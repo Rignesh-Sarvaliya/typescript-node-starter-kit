@@ -12,6 +12,7 @@ import sessionConfig from "./config/session.config";
 import { globalRateLimiter } from "./middlewares/globalRateLimiter";
 import { globalErrorHandler } from "./middlewares/errorHandler";
 import { requestLogger } from "./middlewares/requestLogger";
+import { responseHandler } from "./middlewares/responseHandler";
 import "../events/listeners/user.listener";
 import "../events/listeners/admin.listener";
 
@@ -31,6 +32,7 @@ export const startServer = async () => {
   // Middleware
   app.use(cors(corsConfig));
   app.use(express.json());
+  app.use(responseHandler);
   app.use(loadLocales());
   app.use(
     session({

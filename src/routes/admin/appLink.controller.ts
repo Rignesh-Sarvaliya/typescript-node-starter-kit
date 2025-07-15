@@ -9,7 +9,7 @@ export const getAppLinksHandler = async (req: Request, res: Response) => {
     return res.json({ links: formatAppLinksList(links) });
   } catch (error) {
     captureError(error, "getAppLinks");
-    return res.status(500).json({ message: "Failed to load app links" });
+    return res.fail("Failed to load app links");
   }
 };
 
@@ -37,6 +37,6 @@ export const updateAppLinkHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "updateAppLink");
-    return res.status(500).json({ message: "Failed to update app link" });
+    return res.fail("Failed to update app link");
   }
 };
