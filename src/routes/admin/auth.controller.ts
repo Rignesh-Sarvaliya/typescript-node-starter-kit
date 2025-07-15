@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AdminLoginRequestSchema } from "../../requests/admin/auth.request";
 import { findAdminByEmail } from "../../repositories/admin.repository";
 import { hashPassword, comparePassword } from "../../utils/hash";
@@ -14,7 +14,11 @@ import { issueAuthToken } from "../../utils/authToken";
 import { signJwt } from "../../utils/jwt";
 import { success, error } from "../../utils/responseWrapper";
 
-export const loginAdmin = async (req: Request, res: Response) => {
+export const loginAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, password } = AdminLoginRequestSchema.parse(req.body);
 
@@ -49,6 +53,6 @@ export const loginAdmin = async (req: Request, res: Response) => {
     );
   } catch (err) {
     captureError(err, "adminLogin");
-    return res.status(500).json(error("Login failed"));
+    return next(err);
   }
 };

@@ -25,7 +25,7 @@ export default function validateRequest({
           .json(error("Validation failed", formatZodError(err)));
       }
 
-      return res.status(500).json(error("Unexpected validation error"));
+      return next(err);
     }
   };
 }

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   ChangePasswordRequestSchema,
   ResetPasswordBodySchema,
@@ -21,7 +21,11 @@ import { userEmitter } from "../../events/emitters/userEmitter";
 import { success, error } from "../../utils/responseWrapper";
 import { getUserIdFromToken, deleteResetToken } from "../../utils/resetToken";
 
-export const changePassword = async (req: Request, res: Response) => {
+export const changePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.user!.id;
     const { current_password, new_password } =
@@ -56,11 +60,15 @@ export const changePassword = async (req: Request, res: Response) => {
     return res.json(success("Password changed successfully"));
   } catch (err) {
     captureError(err, "changePassword");
-    return res.status(500).json(error("Failed to change password"));
+    return next(err);
   }
 };
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { token } = ResetPasswordParamsSchema.parse(req.params);
     const { new_password } = ResetPasswordBodySchema.parse(req.body);
@@ -79,6 +87,6 @@ export const resetPassword = async (req: Request, res: Response) => {
     return res.json(success("Password reset successfully"));
   } catch (err) {
     captureError(err, "resetPassword");
-    return res.status(500).json(error("Failed to reset password"));
+    return next(err);
   }
 };

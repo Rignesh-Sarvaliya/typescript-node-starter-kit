@@ -57,7 +57,7 @@ export const startServer = async (): Promise<Server> => {
   app.use((req, res, next) => {
     if (typeof res.setHeader !== "function") {
       logger.error("res.setHeader is not a function!", res);
-      return res.status(500).json(error("res.setHeader is not a function"));
+      return next(new Error("res.setHeader is not a function"));
     }
     next();
   });

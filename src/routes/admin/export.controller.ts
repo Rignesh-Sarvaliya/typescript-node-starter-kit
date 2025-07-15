@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ExportUserParamSchema } from "../../requests/admin/export.request";
 import { getAllUsersForExport } from "../../repositories/user.repository";
 import { logUserExport } from "../../jobs/export.jobs";
@@ -7,7 +7,11 @@ import XLSX from "xlsx";
 import { captureError } from "../../telemetry/sentry";
 import { error } from "../../utils/responseWrapper";
 
-export const exportUsersHandler = async (req: Request, res: Response) => {
+export const exportUsersHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { type } = ExportUserParamSchema.parse(req.params);
     const users = await getAllUsersForExport();
@@ -38,6 +42,6 @@ export const exportUsersHandler = async (req: Request, res: Response) => {
     return res.status(400).json(error("Unsupported export type"));
   } catch (err) {
     captureError(err, "exportUsers");
-    return res.status(500).json(error("Failed to export users"));
+    return next(err);
   }
 };
