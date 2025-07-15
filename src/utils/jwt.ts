@@ -29,10 +29,6 @@ export const verifyJwt = <T>(token: string): T | null => {
   const data = `${headerB64}.${payloadB64}`;
   const expectedSig = base64url(createHmac('sha256', JWT_SECRET).update(data).digest());
   if (expectedSig !== signature) return null;
-  try {
-    const payload = JSON.parse(fromBase64url(payloadB64).toString());
-    return payload as T;
-  } catch {
-    return null;
-  }
+  const payload = JSON.parse(fromBase64url(payloadB64).toString());
+  return payload as T;
 };

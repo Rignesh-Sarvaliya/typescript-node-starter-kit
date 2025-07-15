@@ -7,7 +7,6 @@ import { logger } from "./utils/logger";
 import { redisClient } from "./config/redis.config";
 import RedisStore from "connect-redis";
 import { isProduction } from "./config/env";
-import { loadLocales } from "./utils/i18n";
 // import { errorHandler } from "./middlewares/errorHandler";
 import corsConfig from "./config/cors.config";
 import sessionConfig from "./config/session.config";
@@ -15,6 +14,7 @@ import { globalRateLimiter } from "./middlewares/globalRateLimiter";
 import { globalErrorHandler } from "./middlewares/errorHandler";
 import { requestLogger } from "./middlewares/requestLogger";
 import { success, error } from "./utils/responseWrapper";
+import { StatusCode } from "./constants/statusCodes";
 // import "../events/listeners/user.listener";
 // import "../events/listeners/admin.listener";
 
@@ -35,23 +35,17 @@ export const startServer = async (): Promise<Server> => {
   // Try to connect to Redis, but don't fail if it's not available
   let redisStore: any = undefined;
   if (redisClient && isProduction) {
-    try {
-      if (
-        redisClient.status !== "ready" &&
-        redisClient.status !== "connecting"
-      ) {
-        await redisClient.connect();
-      }
-      redisStore = new (RedisStore as any)({ client: redisClient });
-      logger.info("✅ Redis connected successfully");
-    } catch (error) {
-      logger.warn("⚠️ Redis not available, using memory session store");
-      redisStore = undefined;
+    if (
+      redisClient.status !== "ready" &&
+      redisClient.status !== "connecting"
+    ) {
+      await redisClient.connect();
     }
+    redisStore = new (RedisStore as any)({ client: redisClient });
+    logger.info("✅ Redis connected successfully");
   } else {
     logger.info("ℹ️ Redis disabled for local development");
   }
-  // app.use(loadLocales());
 
   // Middleware
   app.use((req, res, next) => {
@@ -76,7 +70,7 @@ export const startServer = async (): Promise<Server> => {
 
   // root route
   app.get("/", (req, res) => {
-    res.status(200).json(success("Hello World"));
+    res.status(StatusCode.OK).json(success("Hello World"));
   });
 
   // Password reset view

@@ -5,18 +5,13 @@ import { logger } from "../utils/logger";
 let redisClient: any = null;
 
 if (isProduction) {
-  try {
-    const Redis = require("ioredis");
-    redisClient = new Redis({
-      host: process.env.REDIS_HOST || "localhost",
-      port: Number(process.env.REDIS_PORT) || 6379,
-      password: process.env.REDIS_PASSWORD || undefined,
-    });
-    logger.info("✅ Redis client created for production");
-  } catch (error) {
-    logger.warn("⚠️ Failed to create Redis client:", error);
-    redisClient = null;
-  }
+  const Redis = require("ioredis");
+  redisClient = new Redis({
+    host: process.env.REDIS_HOST || "localhost",
+    port: Number(process.env.REDIS_PORT) || 6379,
+    password: process.env.REDIS_PASSWORD || undefined,
+  });
+  logger.info("✅ Redis client created for production");
 } else {
   logger.info("ℹ️ Redis client disabled for development");
 }
