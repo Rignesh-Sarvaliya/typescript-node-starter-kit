@@ -19,7 +19,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
     if (!admin) return res.status(404).json({ message: AdminMessages.notFound });
 
     const valid = await comparePassword(password, admin.password);
-    if (!valid) return res.status(401).json({ message: AdminMessages.invalidCredentials });
+    if (!valid) return res.unauthorized(AdminMessages.invalidCredentials);
 
     const adminEntity = new AdminEntity(admin.id, admin.name, admin.email);
 
@@ -39,6 +39,6 @@ export const loginAdmin = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "adminLogin");
-    return res.status(500).json({ message: "Login failed" });
+    return res.fail("Login failed");
   }
 };

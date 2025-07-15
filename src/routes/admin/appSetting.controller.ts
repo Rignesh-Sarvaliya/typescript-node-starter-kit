@@ -34,7 +34,7 @@ export const getAppSettings = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "getAppSettings");
-    return res.status(500).json({ message: "Failed to fetch app settings" });
+    return res.fail("Failed to fetch app settings");
   }
 };
 
@@ -53,7 +53,7 @@ export const createAppSettingHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "createAppSetting");
-    return res.status(500).json({ message: "Failed to create app setting" });
+    return res.fail("Failed to create app setting");
   }
 };
 
@@ -73,7 +73,7 @@ export const updateAppSettingHandler = async (req: Request, res: Response) => {
     });
   } catch (error) {
     captureError(error, "updateAppSetting");
-    return res.status(500).json({ message: "Failed to update app setting" });
+    return res.fail("Failed to update app setting");
   }
 };
 
@@ -89,6 +89,6 @@ export const deleteAppSettingHandler = async (req: Request, res: Response) => {
     return res.json({ message: "App setting deleted successfully" });
   } catch (error) {
     captureError(error, "deleteAppSetting");
-    return res.status(500).json({ message: "Failed to delete app setting" });
+    return res.fail("Failed to delete app setting");
   }
 };

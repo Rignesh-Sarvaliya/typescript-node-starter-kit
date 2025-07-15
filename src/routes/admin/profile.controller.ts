@@ -16,6 +16,6 @@ export const getAdminProfile = async (req: Request, res: Response) => {
     return res.json({ admin: formatAdminResponse(admin) });
   } catch (error) {
     captureError(error, "getAdminProfile");
-    return res.status(500).json({ message: "Failed to load admin profile" });
+    return res.fail("Failed to load admin profile");
   }
 };

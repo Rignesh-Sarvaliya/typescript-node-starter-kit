@@ -24,7 +24,7 @@ export default function validateRequest({
         });
       }
 
-      return res.status(500).json({ message: "Unexpected validation error" });
+      return res.fail("Unexpected validation error");
     }
   };
 }

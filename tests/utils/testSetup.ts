@@ -4,8 +4,8 @@ import session from "express-session";
 import { PrismaClient } from "@prisma/client";
 import RedisStore from "connect-redis";
 import { createClient } from "redis";
-import router from "../api/admin.routes"; // or user.routes
-import { responseHandler } from "../middlewares/responseHandler";
+import router from "../../src/api/admin.routes"; // or user.routes
+import { responseHandler } from "../../src/middlewares/responseHandler";
 
 const prisma = new PrismaClient();
 const redisClient = createClient();

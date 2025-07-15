@@ -36,6 +36,6 @@ export const exportUsersHandler = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Unsupported export type" });
   } catch (error) {
     captureError(error, "exportUsers");
-    return res.status(500).json({ message: "Failed to export users" });
+    return res.fail("Failed to export users");
   }
 };

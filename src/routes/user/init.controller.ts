@@ -19,6 +19,6 @@ export const initApp = async (req: Request, res: Response) => {
     return res.json(formatInitAppResponse(setting));
   } catch (error) {
     console.error("InitApp Error:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.fail("Server error");
   }
 };

@@ -17,7 +17,7 @@ export const getNotifications = async (req: Request, res: Response) => {
     return res.json({ notifications: formatNotificationList(notifications) });
   } catch (error) {
     captureError(error, "getNotifications");
-    return res.status(500).json({ message: "Failed to load notifications" });
+    return res.fail("Failed to load notifications");
   }
 };
 
@@ -33,7 +33,7 @@ export const changeNotificationStatus = async (req: Request, res: Response) => {
     return res.json({ message: `Marked ${updatedCount} as ${status}` });
   } catch (error) {
     captureError(error, "changeNotificationStatus");
-    return res.status(500).json({ message: "Failed to update notification status" });
+    return res.fail("Failed to update notification status");
   }
 };
 
@@ -48,6 +48,6 @@ export const clearAllNotifications = async (req: Request, res: Response) => {
     return res.json({ message: Messages.clearNotifications, deleted: deletedCount });
   } catch (error) {
     captureError(error, "clearAllNotifications");
-    return res.status(500).json({ message: "Failed to clear notifications" });
+    return res.fail("Failed to clear notifications");
   }
 };

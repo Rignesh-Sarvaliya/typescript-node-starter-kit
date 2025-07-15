@@ -12,8 +12,15 @@ export const globalErrorHandler = (
 
   // Send to Sentry or monitoring
   captureError(err, req.originalUrl);
+  const status = err.statusCode || err.status || 500;
 
-  return res
-    .status(500)
-    .json(error("Internal server error. Please try again later."));
+  if (status === 401) {
+    return res.unauthorized(err.message || "Unauthorized");
+  }
+
+  if (status >= 500) {
+    return res.fail("Internal server error. Please try again later.");
+  }
+
+  return res.status(status).json(error(err.message));
 };

@@ -73,7 +73,7 @@ const loginUser = async (req: Request, res: Response) => {
 
   const isMatch = await comparePassword(passwordVO.getValue(), userRecord.password);
   if (!isMatch) {
-    return res.status(401).json({ message: AuthMessages.invalidCredentials });
+    return res.unauthorized(AuthMessages.invalidCredentials);
   }
 
   await generateSession(req, userRecord.id, "user");
