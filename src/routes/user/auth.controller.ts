@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import {
   findUserByEmail,
@@ -28,7 +28,11 @@ import { success, error } from "../../utils/responseWrapper";
 
 const prisma = new PrismaClient();
 
-const registerUser = async (req: Request, res: Response) => {
+const registerUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { name, email, password } = req.body;
 
@@ -64,11 +68,15 @@ const registerUser = async (req: Request, res: Response) => {
     );
   } catch (err) {
     captureError(err, "registerUser");
-    return res.status(500).json(error("Registration failed"));
+    return next(err);
   }
 };
 
-const loginUser = async (req: Request, res: Response) => {
+const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const emailVO = new Email(req.body.email);
     const passwordVO = new Password(req.body.password);
@@ -107,21 +115,29 @@ const loginUser = async (req: Request, res: Response) => {
     );
   } catch (err) {
     captureError(err, "loginUser");
-    return res.status(500).json(error("Login failed"));
+    return next(err);
   }
 };
 
-const socialLogin = async (req: Request, res: Response) => {
+const socialLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // Social login is not supported by the current schema
     return res.status(400).json(error("Social login is not supported."));
   } catch (err) {
     captureError(err, "socialLogin");
-    return res.status(500).json(error("Social login failed"));
+    return next(err);
   }
 };
 
-const appleDetails = async (req: Request, res: Response) => {
+const appleDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
@@ -134,11 +150,15 @@ const appleDetails = async (req: Request, res: Response) => {
       .json(error("Apple details lookup is not supported."));
   } catch (err) {
     captureError(err, "appleDetails");
-    return res.status(500).json(error("Failed to fetch apple details"));
+    return next(err);
   }
 };
 
-const sendOtp = async (req: Request, res: Response) => {
+const sendOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email } = req.body;
 
@@ -152,11 +172,15 @@ const sendOtp = async (req: Request, res: Response) => {
     return res.json(success("OTP sent to email"));
   } catch (err) {
     captureError(err, "sendOtp");
-    return res.status(500).json(error("Failed to send OTP"));
+    return next(err);
   }
 };
 
-const forgotPassword = async (req: Request, res: Response) => {
+const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const emailVO = new Email(req.body.email);
 
@@ -174,7 +198,7 @@ const forgotPassword = async (req: Request, res: Response) => {
     return res.json(success("Password reset link sent", { resetUrl }));
   } catch (err) {
     captureError(err, "forgotPassword");
-    return res.status(500).json(error("Failed to send reset link"));
+    return next(err);
   }
 };
 

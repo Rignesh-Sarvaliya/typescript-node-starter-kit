@@ -1,11 +1,15 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { findAdminById } from "../../repositories/admin.repository";
 import { formatAdminResponse } from "../../resources/admin/admin.resource";
 import { AdminMessages } from "../../constants/messages";
 import { captureError } from "../../telemetry/sentry";
 import { success, error } from "../../utils/responseWrapper";
 
-export const getAdminProfile = async (req: Request, res: Response) => {
+export const getAdminProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const adminId = req.user?.id!;
     const admin = await findAdminById(adminId);
@@ -17,6 +21,6 @@ export const getAdminProfile = async (req: Request, res: Response) => {
     return res.json(success("Admin fetched", formatAdminResponse(admin)));
   } catch (err) {
     captureError(err, "getAdminProfile");
-    return res.status(500).json(error("Failed to load admin profile"));
+    return next(err);
   }
 };

@@ -14,10 +14,9 @@ export const globalErrorHandler = (
   // Send to Sentry or monitoring
   captureError(err, req.originalUrl);
 
-  return (
-    res
-      .status(500)
-      // .json(error("Internal server error. Please try again later."));
-      .json(error(err.message))
-  );
+  const message = err.stack
+    ? err.stack.split("\n").slice(0, 5).join("\n")
+    : err.message;
+
+  return res.status(500).json(error(message));
 };

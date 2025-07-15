@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   findUserById,
   updateUserById,
@@ -13,7 +13,11 @@ import { UpdateProfileRequestSchema } from "../../resources/user/profile.request
 import { logUserUpdate } from "../../jobs/profile.jobs";
 import { success, error } from "../../utils/responseWrapper";
 
-export const getProfile = async (req: Request, res: Response) => {
+export const getProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.user?.id;
     const user = await findUserById(userId!);
@@ -26,12 +30,15 @@ export const getProfile = async (req: Request, res: Response) => {
     return res.json(success("User fetched successfully", formatUserResponse(user)));
   } catch (err) {
     captureError(err, "getProfile");
-    // return res.status(500).json({ message: "Server error" });
-    return res.status(500).json(error("Failed to load profile"));
+    return next(err);
   }
 };
 
-export const updateProfile = async (req: Request, res: Response) => {
+export const updateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.user?.id!;
     const body = UpdateProfileRequestSchema.parse(req.body);
@@ -58,6 +65,6 @@ export const updateProfile = async (req: Request, res: Response) => {
     );
   } catch (err) {
     captureError(err, "updateProfile");
-    return res.status(500).json(error("Update failed"));
+    return next(err);
   }
 };

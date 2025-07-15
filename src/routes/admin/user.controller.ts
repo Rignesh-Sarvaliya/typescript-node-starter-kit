@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import {
   getAllUsers,
@@ -26,17 +26,25 @@ import { success, error } from "../../utils/responseWrapper";
 
 const prisma = new PrismaClient();
 
-export const getAllUsersHandler = async (req: Request, res: Response) => {
+export const getAllUsersHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const users = await getAllUsers();
     return res.json(success("Users fetched", formatUserListForAdmin(users)));
   } catch (err) {
     captureError(err, "getAllUsers");
-    return res.status(500).json(error("Failed to load users"));
+    return next(err);
   }
 };
 
-export const updateUserHandler = async (req: Request, res: Response) => {
+export const updateUserHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = UpdateUserParamSchema.parse(req.params);
     const body = UpdateUserBodySchema.parse(req.body);
@@ -50,11 +58,15 @@ export const updateUserHandler = async (req: Request, res: Response) => {
     );
   } catch (err) {
     captureError(err, "updateUser");
-    return res.status(500).json(error("Failed to update user"));
+    return next(err);
   }
 };
 
-export const toggleUserStatusHandler = async (req: Request, res: Response) => {
+export const toggleUserStatusHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = ToggleUserParamSchema.parse(req.params);
     const user = await toggleUserStatus(Number(id));
@@ -66,11 +78,15 @@ export const toggleUserStatusHandler = async (req: Request, res: Response) => {
     );
   } catch (err) {
     captureError(err, "toggleUserStatus");
-    return res.status(500).json(error("Failed to toggle user"));
+    return next(err);
   }
 };
 
-export const deleteUserHandler = async (req: Request, res: Response) => {
+export const deleteUserHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = DeleteUserParamSchema.parse(req.params);
     const user = await softDeleteUser(Number(id));
@@ -82,6 +98,6 @@ export const deleteUserHandler = async (req: Request, res: Response) => {
     );
   } catch (err) {
     captureError(err, "deleteUser");
-    return res.status(500).json(error("Failed to delete user"));
+    return next(err);
   }
 };

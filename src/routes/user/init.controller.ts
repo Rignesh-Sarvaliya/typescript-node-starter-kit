@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { formatInitAppResponse } from "../../resources/user/init.resource";
 import { success, error } from "../../utils/responseWrapper";
@@ -6,7 +6,11 @@ import { logger } from "../../utils/logger";
 
 const prisma = new PrismaClient();
 
-export const initApp = async (req: Request, res: Response) => {
+export const initApp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { app_type } = req.params;
 
   try {
@@ -21,6 +25,6 @@ export const initApp = async (req: Request, res: Response) => {
     return res.json(success("App settings fetched", formatInitAppResponse(setting)));
   } catch (err) {
     logger.error("InitApp Error:", err);
-    return res.status(500).json(error("Server error"));
+    return next(err);
   }
 };
