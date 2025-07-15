@@ -10,14 +10,8 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 let redis: any = null;
 // Only use Redis in production
 if (isProduction) {
-  try {
-    redis = createClient({ url: process.env.REDIS_URL });
-    redis.connect();
-  } catch (error) {
-    logger.warn(
-      "⚠️ Redis not available for rate limiting, using memory store"
-    );
-  }
+  redis = createClient({ url: process.env.REDIS_URL });
+  redis.connect();
 } else {
   logger.info("ℹ️ Redis disabled for rate limiting in local development");
 }
@@ -32,8 +26,7 @@ export const rateLimiter = ({
   windowInSeconds?: number;
 }) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const identifier = req.user?.id || req.ip || "unknown";
+    const identifier = req.user?.id || req.ip || "unknown";
       const key = `${keyPrefix}:${identifier}`;
 
       if (redis && isProduction) {
@@ -66,11 +59,6 @@ export const rateLimiter = ({
       }
 
       next();
-    } catch (error) {
-      logger.error("Rate limiter error:", error);
-      // Continue without rate limiting if there's an error
-      next();
-    }
   };
 };
 

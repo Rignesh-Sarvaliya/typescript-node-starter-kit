@@ -10,14 +10,8 @@ const memoryStore = new Map<string, { count: number; resetTime: number }>();
 let redis: any = null;
 // Only use Redis in production
 if (isProduction) {
-  try {
-    redis = createClient({ url: process.env.REDIS_URL });
-    redis.connect();
-  } catch (error) {
-    logger.warn(
-      "⚠️ Redis not available for rate limiting, using memory store"
-    );
-  }
+  redis = createClient({ url: process.env.REDIS_URL });
+  redis.connect();
 } else {
   logger.info("ℹ️ Redis disabled for rate limiting in local development");
 }
@@ -36,60 +30,50 @@ export const globalRateLimiter = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const identifier = req.user?.id || req.ip;
-    const path =
-      Object.keys(RATE_LIMIT_RULES).find((key) =>
-        req.originalUrl.startsWith(key)
-      ) || "*";
+  const identifier = req.user?.id || req.ip;
+  const path =
+    Object.keys(RATE_LIMIT_RULES).find((key) =>
+      req.originalUrl.startsWith(key)
+    ) || "*";
 
-    const { limit, window } = RATE_LIMIT_RULES[path];
-    const redisKey = `rate:${path}:${identifier}`;
+  const { limit, window } = RATE_LIMIT_RULES[path];
+  const redisKey = `rate:${path}:${identifier}`;
 
-    if (redis) {
-      // Use Redis if available
-      const current = await redis.incr(redisKey);
-      if (current === 1) {
-        await redis.expire(redisKey, window);
-      }
-
-      if (current > limit) {
-        return res
-          .status(429)
-          .json(
-            error("Too many requests — please slow down.", {
-              route: path,
-              retry_after: window,
-            })
-          );
-      }
-    } else {
-      // Use in-memory store as fallback
-      const now = Date.now();
-      const key = `${path}:${identifier}`;
-      const record = memoryStore.get(key);
-
-      if (!record || now > record.resetTime) {
-        memoryStore.set(key, { count: 1, resetTime: now + window * 1000 });
-      } else {
-        record.count++;
-        if (record.count > limit) {
-          return res
-            .status(429)
-            .json(
-              error("Too many requests — please slow down.", {
-                route: path,
-                retry_after: window,
-              })
-            );
-        }
-      }
+  if (redis) {
+    // Use Redis if available
+    const current = await redis.incr(redisKey);
+    if (current === 1) {
+      await redis.expire(redisKey, window);
     }
 
-    next();
-  } catch (error) {
-    logger.error("❌ RateLimiter error:", error);
-    // Continue without rate limiting if there's an error
-    next();
+    if (current > limit) {
+      return res.status(429).json(
+        error("Too many requests — please slow down.", {
+          route: path,
+          retry_after: window,
+        })
+      );
+    }
+  } else {
+    // Use in-memory store as fallback
+    const now = Date.now();
+    const key = `${path}:${identifier}`;
+    const record = memoryStore.get(key);
+
+    if (!record || now > record.resetTime) {
+      memoryStore.set(key, { count: 1, resetTime: now + window * 1000 });
+    } else {
+      record.count++;
+      if (record.count > limit) {
+        return res.status(429).json(
+          error("Too many requests — please slow down.", {
+            route: path,
+            retry_after: window,
+          })
+        );
+      }
+    }
   }
+
+  next();
 };

@@ -13,19 +13,36 @@ export default function validateRequest({
   params?: any;
 }) {
   return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (body) req.body = body.parse(req.body);
-      if (query) req.query = query.parse(req.query);
-      if (params) req.params = params.parse(req.params);
-      next();
-    } catch (err) {
-      if (err instanceof ZodError) {
+    if (body) {
+      const result = body.safeParse(req.body);
+      if (!result.success) {
         return res
           .status(422)
-          .json(error("Validation failed", formatZodError(err)));
+          .json(error("Validation failed", formatZodError(result.error)));
       }
-
-      return next(err);
+      req.body = result.data;
     }
+
+    if (query) {
+      const result = query.safeParse(req.query);
+      if (!result.success) {
+        return res
+          .status(422)
+          .json(error("Validation failed", formatZodError(result.error)));
+      }
+      req.query = result.data;
+    }
+
+    if (params) {
+      const result = params.safeParse(req.params);
+      if (!result.success) {
+        return res
+          .status(422)
+          .json(error("Validation failed", formatZodError(result.error)));
+      }
+      req.params = result.data;
+    }
+
+    next();
   };
 }

@@ -15,12 +15,8 @@ let redisClient: any = null;
 let RedisSession: any = null;
 
 if (isProduction) {
-  try {
-    redisClient = createClient();
-    RedisSession = (RedisStore as any)(session);
-  } catch (error) {
-    logger.warn("⚠️ Redis not available for test setup");
-  }
+  redisClient = createClient();
+  RedisSession = (RedisStore as any)(session);
 } else {
   logger.info("ℹ️ Redis disabled for test setup in development");
 }
