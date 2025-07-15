@@ -14,23 +14,3 @@ export const findUserNotifications = async (userId: number): Promise<Notificatio
       new NotificationEntity(n.id, n.user_id, n.title, n.message, n.read, n.created_at)
   );
 };
-
-export const updateUserNotificationStatus = async (
-  userId: number,
-  read: boolean
-): Promise<number> => {
-  const result = await prisma.notification.updateMany({
-    where: { user_id: userId },
-    data: { read },
-  });
-
-  return result.count;
-};
-
-export const deleteAllNotificationsForUser = async (userId: number): Promise<number> => {
-  const result = await prisma.notification.deleteMany({
-    where: { user_id: userId },
-  });
-
-  return result.count;
-};

@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import {
-  findUserById,
-  updateUserById,
-} from "../../repositories/user.repository";
+import { findUserById } from "../../repositories/user.repository";
+import { updateUserById } from "../../services/user.service";
 import { formatUserResponse } from "../../resources/user/user.resource";
 import { Messages } from "../../constants/messages";
 import { asyncHandler } from "../../utils/asyncHandler";

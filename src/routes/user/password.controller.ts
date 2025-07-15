@@ -5,10 +5,8 @@ import {
   ResetPasswordParamsSchema,
 } from "../../requests/user/password.request";
 import { comparePassword, hashPassword } from "../../utils/hash";
-import {
-  changeUserPassword,
-  findUserWithPasswordById,
-} from "../../repositories/user.repository";
+import { changeUserPassword } from "../../services/user.service";
+import { findUserWithPasswordById } from "../../repositories/user.repository";
 import { Password } from "../../domain/valueObjects/password.vo";
 import {
   isBlocked,

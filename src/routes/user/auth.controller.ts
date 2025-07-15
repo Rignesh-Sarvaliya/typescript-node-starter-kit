@@ -1,9 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
-import {
-  findUserByEmail,
-  createUser,
-} from "../../repositories/user.repository";
+import { findUserByEmail } from "../../repositories/user.repository";
+import { createUser } from "../../services/user.service";
 import { hashPassword, comparePassword } from "../../utils/hash";
 import { generateSession } from "../../utils/session";
 import { formatUserResponse } from "../../resources/user/user.resource";
@@ -27,7 +24,6 @@ import { issueAuthToken } from "../../utils/authToken";
 import { signJwt } from "../../utils/jwt";
 import { success, error } from "../../utils/responseWrapper";
 
-const prisma = new PrismaClient();
 
 const registerUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
