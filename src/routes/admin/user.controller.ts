@@ -10,7 +10,7 @@ import {
   formatUserListForAdmin,
   formatUserForAdmin,
 } from "../../resources/admin/user.resource";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import {
   UpdateUserParamSchema,
   UpdateUserBodySchema,
@@ -26,26 +26,15 @@ import { success, error } from "../../utils/responseWrapper";
 
 const prisma = new PrismaClient();
 
-export const getAllUsersHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getAllUsersHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const users = await getAllUsers();
     return res.json(success("Users fetched", formatUserListForAdmin(users)));
-  } catch (err) {
-    captureError(err, "getAllUsers");
-    return next(err);
   }
-};
+);
 
-export const updateUserHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateUserHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = UpdateUserParamSchema.parse(req.params);
     const body = UpdateUserBodySchema.parse(req.body);
 
@@ -56,18 +45,11 @@ export const updateUserHandler = async (
     return res.json(
       success("User updated successfully", formatUserForAdmin(updated))
     );
-  } catch (err) {
-    captureError(err, "updateUser");
-    return next(err);
   }
-};
+);
 
-export const toggleUserStatusHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const toggleUserStatusHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = ToggleUserParamSchema.parse(req.params);
     const user = await toggleUserStatus(Number(id));
 
@@ -76,18 +58,11 @@ export const toggleUserStatusHandler = async (
     return res.json(
       success(`User ${user.status ? "activated" : "deactivated"}`, formatUserForAdmin(user))
     );
-  } catch (err) {
-    captureError(err, "toggleUserStatus");
-    return next(err);
   }
-};
+);
 
-export const deleteUserHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const deleteUserHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = DeleteUserParamSchema.parse(req.params);
     const user = await softDeleteUser(Number(id));
 
@@ -96,8 +71,5 @@ export const deleteUserHandler = async (
     return res.json(
       success("User deleted successfully", formatUserForAdmin(user))
     );
-  } catch (err) {
-    captureError(err, "deleteUser");
-    return next(err);
   }
-};
+);

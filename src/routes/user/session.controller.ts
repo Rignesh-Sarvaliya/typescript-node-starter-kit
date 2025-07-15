@@ -3,16 +3,12 @@ import { destroySession } from "../../utils/session";
 import { clearAllUserSessionKeys } from "../../utils/passwordAttempt";
 import { invalidateAuthToken } from "../../utils/authToken";
 import { logLogout } from "../../jobs/session.jobs";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { Messages } from "../../constants/messages";
 import { success, error } from "../../utils/responseWrapper";
 
-export const logout = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const logout = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
 
     await clearAllUserSessionKeys(userId!);
@@ -21,8 +17,5 @@ export const logout = async (
     logLogout(userId!);
 
     return res.json(success(Messages.logoutSuccess));
-  } catch (err) {
-    captureError(err, "logout");
-    return next(err);
   }
-};
+);

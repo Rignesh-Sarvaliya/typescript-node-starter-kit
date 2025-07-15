@@ -8,18 +8,14 @@ import { AdminEntity } from "../../domain/entities/admin.entity";
 import { formatAdminResponse } from "../../resources/admin/admin.resource";
 import { logAdminLogin } from "../../jobs/admin.jobs";
 import { AdminPassword } from "../../domain/valueObjects/adminPassword.vo";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
 import { issueAuthToken } from "../../utils/authToken";
 import { signJwt } from "../../utils/jwt";
 import { success, error } from "../../utils/responseWrapper";
 
-export const loginAdmin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const loginAdmin = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = AdminLoginRequestSchema.parse(req.body);
 
     const admin = await findAdminByEmail(email);
@@ -51,8 +47,5 @@ export const loginAdmin = async (
         token,
       })
     );
-  } catch (err) {
-    captureError(err, "adminLogin");
-    return next(err);
   }
-};
+);

@@ -21,19 +21,16 @@ import { Email } from "../../domain/valueObjects/email.vo";
 import { Password } from "../../domain/valueObjects/password.vo";
 import { UserEntity } from "../../domain/entities/user.entity";
 import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
-import { captureError } from "../../telemetry/sentry";
+
+import { asyncHandler } from "../../utils/asyncHandler";
 import { issueAuthToken } from "../../utils/authToken";
 import { signJwt } from "../../utils/jwt";
 import { success, error } from "../../utils/responseWrapper";
 
 const prisma = new PrismaClient();
 
-const registerUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const registerUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password } = req.body;
 
     // Use domain value objects
@@ -66,18 +63,11 @@ const registerUser = async (
     return res.json(
       success(AuthMessages.registered, formatUserResponse(userEntity))
     );
-  } catch (err) {
-    captureError(err, "registerUser");
-    return next(err);
   }
-};
+);
 
-const loginUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const loginUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const emailVO = new Email(req.body.email);
     const passwordVO = new Password(req.body.password);
 
@@ -113,32 +103,18 @@ const loginUser = async (
     return res.json(
       success(AuthMessages.login, { user: formatUserResponse(userEntity), token })
     );
-  } catch (err) {
-    captureError(err, "loginUser");
-    return next(err);
   }
-};
+);
 
-const socialLogin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const socialLogin = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     // Social login is not supported by the current schema
     return res.status(400).json(error("Social login is not supported."));
-  } catch (err) {
-    captureError(err, "socialLogin");
-    return next(err);
   }
-};
+);
 
-const appleDetails = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const appleDetails = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
     logAppleCheck(id);
@@ -148,18 +124,11 @@ const appleDetails = async (
     return res
       .status(400)
       .json(error("Apple details lookup is not supported."));
-  } catch (err) {
-    captureError(err, "appleDetails");
-    return next(err);
   }
-};
+);
 
-const sendOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const sendOtp = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
 
     const otp = generateOtp();
@@ -170,18 +139,11 @@ const sendOtp = async (
 
     // In real project, integrate email/SMS here
     return res.json(success("OTP sent to email"));
-  } catch (err) {
-    captureError(err, "sendOtp");
-    return next(err);
   }
-};
+);
 
-const forgotPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const forgotPassword = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const emailVO = new Email(req.body.email);
 
     const user = await findUserByEmail(emailVO.getValue());
@@ -196,11 +158,8 @@ const forgotPassword = async (
     userEmitter.emit("password.reset_link.sent", { email: user.email, token });
 
     return res.json(success("Password reset link sent", { resetUrl }));
-  } catch (err) {
-    captureError(err, "forgotPassword");
-    return next(err);
   }
-};
+);
 
 export const authenticationController = {
   registerUser,
