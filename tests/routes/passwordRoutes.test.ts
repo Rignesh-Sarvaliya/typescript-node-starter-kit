@@ -91,7 +91,7 @@ describe('Password Routes', () => {
       (resetTokenUtils.getUserIdFromToken as jest.Mock).mockResolvedValueOnce('1');
       (hashUtils.hashPassword as jest.Mock).mockResolvedValueOnce('hashed');
       const res = await unauth.request
-        .post('/api/user/reset-password/abc')
+        .post('/api/user/reset-password/00000000-0000-0000-0000-000000000000')
         .send({ new_password: 'newpass' });
       expect(res.status).toBe(200);
     });
@@ -100,7 +100,7 @@ describe('Password Routes', () => {
       const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       (resetTokenUtils.getUserIdFromToken as jest.Mock).mockResolvedValueOnce(null);
       const res = await unauth.request
-        .post('/api/user/reset-password/bad')
+        .post('/api/user/reset-password/11111111-1111-1111-1111-111111111111')
         .send({ new_password: 'newpass' });
       expect(res.status).toBe(400);
     });
@@ -108,7 +108,7 @@ describe('Password Routes', () => {
     it('should return 422 for invalid payload', async () => {
       const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       const res = await unauth.request
-        .post('/api/user/reset-password/abc')
+        .post('/api/user/reset-password/00000000-0000-0000-0000-000000000000')
         .send({ new_password: '1' });
       expect(res.status).toBe(422);
     });
@@ -117,7 +117,7 @@ describe('Password Routes', () => {
       const unauth = createAuthTestServer(passwordRoutes, false, '/api/user');
       (resetTokenUtils.getUserIdFromToken as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await unauth.request
-        .post('/api/user/reset-password/abc')
+        .post('/api/user/reset-password/00000000-0000-0000-0000-000000000000')
         .send({ new_password: 'newpass' });
       expect(res.status).toBe(500);
     });

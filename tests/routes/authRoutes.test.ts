@@ -15,7 +15,7 @@ jest.mock('../../src/jobs/logAppleCheck');
 let server: TestServer;
 
 beforeAll(() => {
-  server = createTestServer(authRoutes);
+  server = createTestServer(authRoutes, '/api/user');
 });
 
 beforeEach(() => {

@@ -17,8 +17,7 @@ export const exportUsersHandler = async (req: Request, res: Response) => {
       .slice(0, 10)}.${type}`;
 
     if (type === "csv") {
-      const parser = new Parser();
-      const csv = parser.parse(users);
+      const csv = users.length ? new Parser().parse(users) : "";
       // res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
       // res.setHeader("Content-Type", "text/csv");
       logUserExport("csv");
