@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { findUserNotifications } from "../../repositories/notification.repository";
 import { formatNotificationList } from "../../resources/user/notification.resource";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { NotificationStatusParamSchema } from "../../requests/user/notification.request";
 import { updateUserNotificationStatus } from "../../repositories/notification.repository";
 import { logNotificationStatusChange } from "../../jobs/notification.jobs";
@@ -10,27 +10,16 @@ import { logNotificationClear } from "../../jobs/notification.jobs";
 import { Messages } from "../../constants/messages";
 import { success, error } from "../../utils/responseWrapper";
 
-export const getNotifications = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getNotifications = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user!.id;
     const notifications = await findUserNotifications(userId);
     return res.json(success("Notifications fetched", formatNotificationList(notifications)));
-  } catch (err) {
-    captureError(err, "getNotifications");
-    return next(err);
   }
-};
+);
 
-export const changeNotificationStatus = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const changeNotificationStatus = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { status } = NotificationStatusParamSchema.parse(req.params);
     const userId = req.user!.id;
 
@@ -41,18 +30,11 @@ export const changeNotificationStatus = async (
     logNotificationStatusChange(userId, status, updatedCount);
 
     return res.json(success(`Marked ${updatedCount} as ${status}`));
-  } catch (err) {
-    captureError(err, "changeNotificationStatus");
-    return next(err);
   }
-};
+);
 
-export const clearAllNotifications = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const clearAllNotifications = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user!.id;
 
     const deletedCount = await deleteAllNotificationsForUser(userId);
@@ -62,8 +44,5 @@ export const clearAllNotifications = async (
     return res.json(
       success(Messages.clearNotifications, { deleted: deletedCount })
     );
-  } catch (err) {
-    captureError(err, "clearAllNotifications");
-    return next(err);
   }
-};
+);

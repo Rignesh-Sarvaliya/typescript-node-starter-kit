@@ -4,15 +4,11 @@ import { getAllUsersForExport } from "../../repositories/user.repository";
 import { logUserExport } from "../../jobs/export.jobs";
 import { Parser } from "json2csv";
 import XLSX from "xlsx";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { error } from "../../utils/responseWrapper";
 
-export const exportUsersHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const exportUsersHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { type } = ExportUserParamSchema.parse(req.params);
     const users = await getAllUsersForExport();
 
@@ -40,8 +36,5 @@ export const exportUsersHandler = async (
     }
 
     return res.status(400).json(error("Unsupported export type"));
-  } catch (err) {
-    captureError(err, "exportUsers");
-    return next(err);
   }
-};
+);

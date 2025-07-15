@@ -16,17 +16,13 @@ import {
   clearFailedAttempts,
 } from "../../utils/passwordAttempt";
 import { logPasswordChange } from "../../jobs/password.jobs";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { userEmitter } from "../../events/emitters/userEmitter";
 import { success, error } from "../../utils/responseWrapper";
 import { getUserIdFromToken, deleteResetToken } from "../../utils/resetToken";
 
-export const changePassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const changePassword = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user!.id;
     const { current_password, new_password } =
       ChangePasswordRequestSchema.parse(req.body);
@@ -58,18 +54,11 @@ export const changePassword = async (
     userEmitter.emit("user.passwordChanged", { userId });
 
     return res.json(success("Password changed successfully"));
-  } catch (err) {
-    captureError(err, "changePassword");
-    return next(err);
   }
-};
+);
 
-export const resetPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { token } = ResetPasswordParamsSchema.parse(req.params);
     const { new_password } = ResetPasswordBodySchema.parse(req.body);
 
@@ -85,8 +74,5 @@ export const resetPassword = async (
     userEmitter.emit("user.passwordReset", { userId: Number(userId) });
 
     return res.json(success("Password reset successfully"));
-  } catch (err) {
-    captureError(err, "resetPassword");
-    return next(err);
   }
-};
+);

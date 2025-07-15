@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { getAppVariables } from "../../repositories/appVariable.repository";
 import { formatAppVariableList } from "../../resources/admin/appVariable.resource";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { CreateAppVariableSchema } from "../../requests/admin/appVariable.request";
 import { createAppVariable } from "../../repositories/appVariable.repository";
 import { logAppVariableCreated } from "../../jobs/appVariable.jobs";
@@ -16,26 +16,15 @@ import { success, error } from "../../utils/responseWrapper";
 
 
 
-export const getAppVariablesHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getAppVariablesHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const vars = await getAppVariables();
     return res.json(success("Variables fetched", formatAppVariableList(vars)));
-  } catch (err) {
-    captureError(err, "getAppVariables");
-    return next(err);
   }
-};
+);
 
-export const createAppVariableHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const createAppVariableHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const body = CreateAppVariableSchema.parse(req.body);
 
     const variable = await createAppVariable(body);
@@ -44,18 +33,11 @@ export const createAppVariableHandler = async (
     return res.status(201).json(
       success("App variable created", formatAppVariable(variable))
     );
-  } catch (err) {
-    captureError(err, "createAppVariable");
-    return next(err);
   }
-};
+);
 
-export const updateAppVariableHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateAppVariableHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = UpdateAppVariableParamSchema.parse(req.params);
     const body = UpdateAppVariableBodySchema.parse(req.body);
 
@@ -65,8 +47,5 @@ export const updateAppVariableHandler = async (
     return res.json(
       success("App variable updated", formatAppVariable(updated))
     );
-  } catch (err) {
-    captureError(err, "updateAppVariable");
-    return next(err);
   }
-};
+);

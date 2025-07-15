@@ -5,7 +5,7 @@ import {
 } from "../../repositories/user.repository";
 import { formatUserResponse } from "../../resources/user/user.resource";
 import { Messages } from "../../constants/messages";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { Email } from "../../domain/valueObjects/email.vo";
 import { Name } from "../../domain/valueObjects/name.vo";
 import { UserEntity } from "../../domain/entities/user.entity";
@@ -13,12 +13,8 @@ import { UpdateProfileRequestSchema } from "../../resources/user/profile.request
 import { logUserUpdate } from "../../jobs/profile.jobs";
 import { success, error } from "../../utils/responseWrapper";
 
-export const getProfile = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getProfile = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     const user = await findUserById(userId!);
 
@@ -28,18 +24,11 @@ export const getProfile = async (
 
     // return res.json({ user: formatUserResponse(user) });
     return res.json(success("User fetched successfully", formatUserResponse(user)));
-  } catch (err) {
-    captureError(err, "getProfile");
-    return next(err);
   }
-};
+);
 
-export const updateProfile = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateProfile = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id!;
     const body = UpdateProfileRequestSchema.parse(req.body);
 
@@ -63,8 +52,5 @@ export const updateProfile = async (
     return res.json(
       success("Profile updated successfully", formatUserResponse(userEntity))
     );
-  } catch (err) {
-    captureError(err, "updateProfile");
-    return next(err);
   }
-};
+);

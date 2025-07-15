@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { GetAppSettingsRequestSchema } from "../../requests/admin/appSetting.request";
 import { findAllAppSettings } from "../../repositories/appSetting.repository";
 import { formatAppSettingsList } from "../../resources/admin/appSetting.resource";
-import { captureError } from "../../telemetry/sentry";
+import { asyncHandler } from "../../utils/asyncHandler";
 import { CreateAppSettingRequestSchema } from "../../requests/admin/appSetting.request";
 import { createAppSetting } from "../../repositories/appSetting.repository";
 import { formatAppSetting } from "../../resources/admin/appSetting.resource";
@@ -18,12 +18,8 @@ import { softDeleteAppSetting } from "../../repositories/appSetting.repository";
 import { logAppSettingDeleted } from "../../jobs/appSetting.jobs";
 import { success, error } from "../../utils/responseWrapper";
 
-export const getAppSettings = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getAppSettings = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const parsed = GetAppSettingsRequestSchema.parse(req.query);
 
     const { data, pagination } = await findAllAppSettings({
@@ -39,19 +35,12 @@ export const getAppSettings = async (
         pagination,
       })
     );
-  } catch (err) {
-    captureError(err, "getAppSettings");
-    return next(err);
   }
-};
+);
 
 
-export const createAppSettingHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const createAppSettingHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const body = CreateAppSettingRequestSchema.parse(req.body);
 
     const setting = await createAppSetting(body);
@@ -61,19 +50,12 @@ export const createAppSettingHandler = async (
     return res.status(201).json(
       success("App setting created", formatAppSetting(setting))
     );
-  } catch (err) {
-    captureError(err, "createAppSetting");
-    return next(err);
   }
-};
+);
 
 
-export const updateAppSettingHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateAppSettingHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = UpdateAppSettingParamSchema.parse(req.params);
     const body = UpdateAppSettingRequestSchema.parse(req.body);
 
@@ -84,19 +66,12 @@ export const updateAppSettingHandler = async (
     return res.json(
       success("App setting updated", formatAppSetting(setting))
     );
-  } catch (err) {
-    captureError(err, "updateAppSetting");
-    return next(err);
   }
-};
+);
 
 
-export const deleteAppSettingHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const deleteAppSettingHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = DeleteAppSettingParamSchema.parse(req.params);
 
     await softDeleteAppSetting(Number(id));
@@ -104,8 +79,5 @@ export const deleteAppSettingHandler = async (
     logAppSettingDeleted(Number(id));
 
     return res.json(success("App setting deleted successfully"));
-  } catch (err) {
-    captureError(err, "deleteAppSetting");
-    return next(err);
   }
-};
+);
