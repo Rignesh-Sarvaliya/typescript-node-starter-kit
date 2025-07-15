@@ -15,7 +15,7 @@ import {
   UpdateAppLinkBodySchema,
   UpdateAppLinkParamSchema,
 } from "../../requests/admin/appLink.request";
-import { updateAppLinkById } from "../../repositories/appLink.repository";
+import { updateAppLinkById } from "../../services/appLink.service";
 import { logAppLinkUpdate } from "../../jobs/appLink.jobs";
 import { formatAppLink } from "../../resources/admin/appLink.resource";
 

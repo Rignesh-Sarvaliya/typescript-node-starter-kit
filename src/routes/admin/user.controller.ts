@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
+import { getAllUsers } from "../../repositories/user.repository";
 import {
-  getAllUsers,
   updateUserById,
   toggleUserStatus,
   softDeleteUser,
-} from "../../repositories/user.repository";
+} from "../../services/user.service";
 import {
   formatUserListForAdmin,
   formatUserForAdmin,
@@ -24,7 +23,6 @@ import {
 } from "../../jobs/user.jobs";
 import { success, error } from "../../utils/responseWrapper";
 
-const prisma = new PrismaClient();
 
 export const getAllUsersHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

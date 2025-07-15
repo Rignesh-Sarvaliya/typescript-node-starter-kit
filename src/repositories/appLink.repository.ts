@@ -6,13 +6,3 @@ export const getAppLinks = async () => {
     orderBy: { created_at: "desc" },
   });
 };
-
-export const updateAppLinkById = async (
-  id: number,
-  data: { value: string }
-) => {
-  return prisma.appMenuLink.update({
-    where: { id },
-    data,
-  });
-};

@@ -4,17 +4,17 @@ import { findAllAppSettings } from "../../repositories/appSetting.repository";
 import { formatAppSettingsList } from "../../resources/admin/appSetting.resource";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { CreateAppSettingRequestSchema } from "../../requests/admin/appSetting.request";
-import { createAppSetting } from "../../repositories/appSetting.repository";
+import { createAppSetting } from "../../services/appSetting.actions";
 import { formatAppSetting } from "../../resources/admin/appSetting.resource";
 import { logAppSettingCreated } from "../../jobs/appSetting.jobs";
 import {
   UpdateAppSettingRequestSchema,
   UpdateAppSettingParamSchema,
 } from "../../requests/admin/appSetting.request";
-import { updateAppSetting } from "../../repositories/appSetting.repository";
+import { updateAppSetting } from "../../services/appSetting.actions";
 import { logAppSettingUpdated } from "../../jobs/appSetting.jobs";
 import { DeleteAppSettingParamSchema } from "../../requests/admin/appSetting.request";
-import { softDeleteAppSetting } from "../../repositories/appSetting.repository";
+import { softDeleteAppSetting } from "../../services/appSetting.actions";
 import { logAppSettingDeleted } from "../../jobs/appSetting.jobs";
 import { success, error } from "../../utils/responseWrapper";
 

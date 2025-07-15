@@ -3,14 +3,14 @@ import { getAppVariables } from "../../repositories/appVariable.repository";
 import { formatAppVariableList } from "../../resources/admin/appVariable.resource";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { CreateAppVariableSchema } from "../../requests/admin/appVariable.request";
-import { createAppVariable } from "../../repositories/appVariable.repository";
+import { createAppVariable } from "../../services/appVariable.service";
 import { logAppVariableCreated } from "../../jobs/appVariable.jobs";
 import { formatAppVariable } from "../../resources/admin/appVariable.resource";
 import {
   UpdateAppVariableParamSchema,
   UpdateAppVariableBodySchema,
 } from "../../requests/admin/appVariable.request";
-import { updateAppVariable } from "../../repositories/appVariable.repository";
+import { updateAppVariable } from "../../services/appVariable.service";
 import { logAppVariableUpdated } from "../../jobs/appVariable.jobs";
 import { success, error } from "../../utils/responseWrapper";
 

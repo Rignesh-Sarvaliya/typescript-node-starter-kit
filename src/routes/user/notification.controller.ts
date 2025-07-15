@@ -3,9 +3,9 @@ import { findUserNotifications } from "../../repositories/notification.repositor
 import { formatNotificationList } from "../../resources/user/notification.resource";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { NotificationStatusParamSchema } from "../../requests/user/notification.request";
-import { updateUserNotificationStatus } from "../../repositories/notification.repository";
+import { updateUserNotificationStatus } from "../../services/notification.service";
 import { logNotificationStatusChange } from "../../jobs/notification.jobs";
-import { deleteAllNotificationsForUser } from "../../repositories/notification.repository";
+import { deleteAllNotificationsForUser } from "../../services/notification.service";
 import { logNotificationClear } from "../../jobs/notification.jobs";
 import { Messages } from "../../constants/messages";
 import { success, error } from "../../utils/responseWrapper";
