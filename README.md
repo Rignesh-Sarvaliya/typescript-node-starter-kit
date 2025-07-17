@@ -37,6 +37,26 @@ tests/                   # Jest + Supertest suites
 
 ---
 
+## Microservices Architecture
+
+The repository follows a microservice approach. All microservice code sits
+inside the top level `services` directory. Services are grouped by `user` and
+`admin` modules:
+
+- `services/admin/admin-auth-service` – admin authentication
+- `services/admin/admin-user-service` – admin user management & exports
+- `services/admin/admin-notification-service` – admin notifications
+- `services/admin/admin-service` – remaining admin features
+- `services/user/user-auth-service` – user authentication
+- `services/user/user-service` – other user endpoints
+- `services/gateway` – lightweight proxy that routes requests to the
+  appropriate service
+
+Run each service individually with the scripts listed in `package.json` or start
+the gateway (default `npm run dev`) to proxy requests on port `3000`.
+
+---
+
 ## 🛠 Installation
 
 Install the dependencies:
