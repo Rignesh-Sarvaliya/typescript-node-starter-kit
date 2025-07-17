@@ -1,8 +1,10 @@
 import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
 import profileRoutes from '@/routes/user/profile';
 import * as userRepo from '@/repositories/user.repository';
+import * as userService from '@/services/user.service';
 
 jest.mock('@/repositories/user.repository');
+jest.mock('@/services/user.service');
 
 let server: AuthTestServer;
 
@@ -43,7 +45,7 @@ describe('Profile Routes', () => {
 
   describe('POST /api/user/update', () => {
     it('should update user profile', async () => {
-      (userRepo.updateUserById as jest.Mock).mockResolvedValueOnce({ id: 1, name: 'John', email: 'john@example.com' });
+      (userService.updateUserById as jest.Mock).mockResolvedValueOnce({ id: 1, name: 'John', email: 'john@example.com' });
       const res = await server.request.post('/api/user/update').send({ name: 'John', email: 'john@example.com' });
       expect(res.status).toBe(200);
     });
@@ -54,7 +56,7 @@ describe('Profile Routes', () => {
     });
 
     it('should handle server errors', async () => {
-      (userRepo.updateUserById as jest.Mock).mockRejectedValueOnce(new Error('db'));
+      (userService.updateUserById as jest.Mock).mockRejectedValueOnce(new Error('db'));
       const res = await server.request.post('/api/user/update').send({ name: 'John', email: 'john@example.com' });
       expect(res.status).toBe(500);
     });

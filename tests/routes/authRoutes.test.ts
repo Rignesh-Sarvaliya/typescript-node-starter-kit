@@ -1,12 +1,14 @@
 import { createTestServer, TestServer } from '@tests/helpers/expressTestHelper';
 import authRoutes from '@/routes/user/auth';
 import * as userRepo from '@/repositories/user.repository';
+import * as userService from '@/services/user.service';
 import * as hashUtils from '@/utils/hash';
 import * as otpUtils from '@/utils/otp';
 import * as resetTokenUtils from '@/utils/resetToken';
 import { logAppleCheck } from '@/jobs/logAppleCheck';
 
 jest.mock('@/repositories/user.repository');
+jest.mock('@/services/user.service');
 jest.mock('@/utils/hash');
 jest.mock('@/utils/otp');
 jest.mock('@/utils/resetToken');
@@ -27,7 +29,7 @@ describe('Auth Routes', () => {
     it('should register a new user', async () => {
       (userRepo.findUserByEmail as jest.Mock).mockResolvedValueOnce(null);
       (hashUtils.hashPassword as jest.Mock).mockResolvedValueOnce('hashed');
-      (userRepo.createUser as jest.Mock).mockResolvedValueOnce({
+      (userService.createUser as jest.Mock).mockResolvedValueOnce({
         id: 1,
         name: 'John',
         email: 'john@example.com',
