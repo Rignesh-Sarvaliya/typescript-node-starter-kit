@@ -1,39 +1,45 @@
-# 🚀 Node.js + Typescript Starter Kit
+# 🚀 Node.js + TypeScript Starter Kit
 
-A modular, scalable Node.js + TypeScript backend with clean architecture, Prisma ORM, Redis, Supertest, and admin/user separation — built for production-ready apps.
+This project is an open source template for building robust APIs with Node.js. It combines a clean architecture approach with TypeScript, Express and Prisma so teams can quickly bootstrap production ready services.
+
+Designed to be modular and scalable, the kit includes Redis backed sessions, a testing setup with Jest and Supertest, and a complete admin/user separation out of the box.
 
 ---
 
-## 🗂️ Folder Structure
+## Directory Overview
 
-```
-src/
-├── api/              # Route entry points
-├── constants/        # Global enums, messages
-├── decorators/       # Route-level logging
-├── domain/           # DDD: entities, value objects, interfaces
-├── events/           # Emitters/listeners
-├── jobs/             # Logging & async events
-├── locales/          # i18n language support
-├── middlewares/      # Auth/session/validation
-├── repositories/     # Prisma DB access
-├── requests/         # Zod validators
-├── resources/        # Response formatting
-├── routes/           
-│   ├── admin/        # Admin route logic
-│   └── user/         # User route logic
-├── telemetry/        # Sentry, Prometheus
-├── types/            # Extended Express types
-├── utils/            # Caching, hashing, i18n
-├── index.ts          # Entry file
-└── server.ts         # Express bootstrap
+```text
+src/                     # Application source
+├── api/                 # Swagger docs and route entry points
+├── config/              # Environment helpers and global config
+├── constants/           # App-wide enums and messages
+├── decorators/          # Route decorators such as logging
+├── domain/              # DDD entities, interfaces and value objects
+├── events/              # Event emitters and listeners
+├── jobs/                # BullMQ queues and processors
+├── middlewares/         # Auth, rate limiting and validation
+├── repositories/        # Database access via Prisma
+├── requests/            # Zod request validators
+├── resources/           # Response wrappers
+├── routes/              # Route controllers (admin & user)
+├── services/            # Business logic layer
+├── telemetry/           # Sentry integration
+├── templates/           # Email templates
+├── types/               # Custom TypeScript types
+├── utils/               # Helper utilities
+├── index.ts             # App entry point
+└── server.ts            # Express bootstrap
+
+prisma/                  # Prisma schema, migrations and seeds
+scripts/                 # Helper scripts (workers, CLI utilities)
+tests/                   # Jest + Supertest suites
 ```
 
 ---
 
 ## 🛠 Installation
 
-Install project dependencies (including Jest for running tests):
+Install the dependencies:
 
 ```bash
 npm install
@@ -43,10 +49,10 @@ npm install
 
 ## 🔐 Auth System
 
-- User auth (register/login/OTP/forgot-password)
-- Admin auth with session-based login
-- Redis-backed session and OTP cache
-- `express-session` + `connect-redis`
+- User registration, login and OTP flow
+- Admin login with session management
+- Redis backed session and OTP cache
+- Uses `express-session` and `connect-redis`
 
 ---
 
@@ -55,25 +61,27 @@ npm install
 ### 👤 Users
 - Register/Login
 - OTP + Forgot Password
-- Profile update, change password
+- Profile update & change password
 - Notifications (list, mark read, clear)
 - Logout (destroy session)
 
 ### 🧑‍💼 Admin
 - Login
-- Admin-only user management
+- User management
 - App Settings CRUD
-- App Menu Links (e.g. Terms, Privacy)
-- App Variables (dynamic keys)
+- App Menu Links
+- App Variables
 - User Export (CSV/XLSX)
 
 ---
 
 ## 🧪 Testing
 
-- Jest + Supertest setup (`tests/`)
+- Jest + Supertest configured in `tests/`
 - `ts-jest` with `.env.test`
-- Test-ready seed script: `prisma/seed.ts`
+- Seed script available at `prisma/seed.ts`
+
+Run all tests:
 
 ```bash
 npm run test
@@ -87,14 +95,7 @@ npm run test
 npm run dev
 ```
 
-With `nodemon.json`:
-
-```json
-{
-  "watch": ["src"],
-  "exec": "ts-node src/index.ts"
-}
-```
+`nodemon.json` watches the `src` folder and runs `ts-node` on changes.
 
 ---
 
@@ -102,7 +103,7 @@ With `nodemon.json`:
 
 ```bash
 npm run seed
-# Or
+# or
 ts-node prisma/seed.ts
 ```
 
@@ -120,7 +121,7 @@ npx prisma studio
 
 ## 🌐 Environment Setup
 
-Create `.env` and `.env.test` from `.env.example`
+Create `.env` and `.env.test` from `.env.example` and adjust the values:
 
 ```env
 DATABASE_URL=postgresql://user:pass@localhost:5432/smartinbox
@@ -128,13 +129,13 @@ REDIS_URL=redis://localhost:6379
 SESSION_SECRET=mysecret
 ```
 
-`src/config/env.ts` exposes helper flags like `isProduction` so the rest of the code can easily check the running environment without referencing `process.env` directly.
+`src/config/env.ts` exposes helpers like `isProduction` so code can check the runtime environment easily.
 
 ---
 
 ## 🔄 GitHub Actions CI
 
-✅ Auto test on every push/PR via `ci.yml`:
+The `ci.yml` workflow runs tests on every push or PR:
 - Spins up PostgreSQL & Redis
 - Runs Prisma migrations
 - Executes Jest + Supertest
@@ -159,7 +160,7 @@ npm start
 
 ### Health Check
 
-The server exposes a simple health check at `/api/health` that reports uptime and version information.
+The server exposes `/api/health` to report uptime and version information.
 
 ---
 
@@ -171,9 +172,9 @@ The server exposes a simple health check at `/api/health` that reports uptime an
 - Redis
 - Zod (validation)
 - Helmet & compression
-- Supertest + Jest (testing)
-- Sentry (telemetry-ready)
-- Modular folder structure (DDD/clean arch)
+- Supertest + Jest
+- Sentry (telemetry ready)
+- Modular directory structure
 
 ---
 
