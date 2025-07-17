@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import { findUserById } from "../../repositories/user.repository";
-import { updateUserById } from "../../services/user.service";
-import { formatUserResponse } from "../../resources/user/user.resource";
-import { Messages } from "../../constants/messages";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { Email } from "../../domain/valueObjects/email.vo";
-import { Name } from "../../domain/valueObjects/name.vo";
-import { UserEntity } from "../../domain/entities/user.entity";
-import { UpdateProfileRequestSchema } from "../../resources/user/profile.request";
-import { logUserUpdate } from "../../jobs/profile.jobs";
-import { success, error } from "../../utils/responseWrapper";
+import { findUserById } from "@/repositories/user.repository";
+import { updateUserById } from "@/services/user.service";
+import { formatUserResponse } from "@/resources/user/user.resource";
+import { Messages } from "@/constants/messages";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { Email } from "@/domain/valueObjects/email.vo";
+import { Name } from "@/domain/valueObjects/name.vo";
+import { UserEntity } from "@/domain/entities/user.entity";
+import { UpdateProfileRequestSchema } from "@/resources/user/profile.request";
+import { logUserUpdate } from "@/jobs/profile.jobs";
+import { success, error } from "@/utils/responseWrapper";
 
 export const getProfile = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

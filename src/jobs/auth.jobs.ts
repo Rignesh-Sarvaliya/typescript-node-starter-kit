@@ -1,4 +1,4 @@
-import { logger } from "../utils/logger";
+import { logger } from "@/utils/logger";
 
 export const logRegistration = (email: string) => {
   logger.info(`[REGISTER] ${email} registered`);

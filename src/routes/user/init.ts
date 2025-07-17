@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { initApp } from "./init.controller";
-import validateRequest from "../../middlewares/validateRequest";
-import { InitAppRequestSchema } from "../../requests/user/init.request";
+import { initApp } from "@/routes/user/init.controller";
+import validateRequest from "@/middlewares/validateRequest";
+import { InitAppRequestSchema } from "@/requests/user/init.request";
 
 const router = Router();
 

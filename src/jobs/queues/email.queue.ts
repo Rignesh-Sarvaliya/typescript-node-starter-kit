@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
-import { isProduction } from "../../config/env";
-import { logger } from "../../utils/logger";
+import { isProduction } from "@/config/env";
+import { logger } from "@/utils/logger";
 
 class MockQueue {
   async add() {

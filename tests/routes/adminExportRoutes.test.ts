@@ -1,11 +1,11 @@
-import { createAuthTestServer, AuthTestServer } from '../helpers/expressAuthTestHelper';
-import exportRoutes from '../../src/routes/admin/export';
-import * as userRepo from '../../src/repositories/user.repository';
-import * as exportJobs from '../../src/jobs/export.jobs';
+import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
+import exportRoutes from '@/routes/admin/export';
+import * as userRepo from '@/repositories/user.repository';
+import * as exportJobs from '@/jobs/export.jobs';
 import XLSX from 'xlsx';
 
-jest.mock('../../src/repositories/user.repository');
-jest.mock('../../src/jobs/export.jobs');
+jest.mock('@/repositories/user.repository');
+jest.mock('@/jobs/export.jobs');
 
 let server: AuthTestServer;
 

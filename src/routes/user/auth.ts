@@ -1,15 +1,15 @@
 import { Router } from "express";
-import validateRequest from "../../middlewares/validateRequest";
-import { authenticationController } from "./auth.controller";
+import validateRequest from "@/middlewares/validateRequest";
+import { authenticationController } from "@/routes/user/auth.controller";
 import {
   RegisterRequestSchema,
   LoginRequestSchema,
   SocialLoginRequestSchema,
-} from "../../requests/user/auth.request";
-import { AppleDetailsRequestSchema } from "../../requests/user/auth.request";
-import { logAppleRoute } from "../../middlewares/logRouteMiddleware";
-import { SendOtpRequestSchema } from "../../requests/user/auth.request";
-import { ForgotPasswordSchema } from "../../requests/user/auth.request";
+} from "@/requests/user/auth.request";
+import { AppleDetailsRequestSchema } from "@/requests/user/auth.request";
+import { logAppleRoute } from "@/middlewares/logRouteMiddleware";
+import { SendOtpRequestSchema } from "@/requests/user/auth.request";
+import { ForgotPasswordSchema } from "@/requests/user/auth.request";
 
 const router = Router();
 

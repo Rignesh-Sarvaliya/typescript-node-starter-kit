@@ -1,27 +1,27 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllUsers } from "../../repositories/user.repository";
+import { getAllUsers } from "@/repositories/user.repository";
 import {
   updateUserById,
   toggleUserStatus,
   softDeleteUser,
-} from "../../services/user.service";
+} from "@/services/user.service";
 import {
   formatUserListForAdmin,
   formatUserForAdmin,
-} from "../../resources/admin/user.resource";
-import { asyncHandler } from "../../utils/asyncHandler";
+} from "@/resources/admin/user.resource";
+import { asyncHandler } from "@/utils/asyncHandler";
 import {
   UpdateUserParamSchema,
   UpdateUserBodySchema,
   DeleteUserParamSchema,
   ToggleUserParamSchema,
-} from "../../requests/admin/user.request";
+} from "@/requests/admin/user.request";
 import {
   logUserUpdated,
   logUserToggled,
   logUserDeleted,
-} from "../../jobs/user.jobs";
-import { success, error } from "../../utils/responseWrapper";
+} from "@/jobs/user.jobs";
+import { success, error } from "@/utils/responseWrapper";
 
 
 export const getAllUsersHandler = asyncHandler(

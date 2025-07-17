@@ -1,4 +1,4 @@
-import { createTestServer, TestServer } from '../helpers/expressTestHelper';
+import { createTestServer, TestServer } from '@tests/helpers/expressTestHelper';
 
 const mockFindFirst = jest.fn();
 
@@ -10,7 +10,7 @@ jest.mock("@prisma/client", () => {
   };
 });
 
-import initRoutes from '../../src/routes/user/init';
+import initRoutes from '@/routes/user/init';
 
 let server: TestServer;
 

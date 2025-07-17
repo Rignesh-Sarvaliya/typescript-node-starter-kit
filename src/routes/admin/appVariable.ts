@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { getAppVariablesHandler } from "./appVariable.controller";
-import { requireAdminAuth } from "../../middlewares/authMiddleware";
-import { logRoute } from "../../decorators/logRoute";
-import { CreateAppVariableSchema } from "../../requests/admin/appVariable.request";
-import { createAppVariableHandler } from "./appVariable.controller";
-import validateRequest from "../../middlewares/validateRequest";
+import { getAppVariablesHandler } from "@/routes/admin/appVariable.controller";
+import { requireAdminAuth } from "@/middlewares/authMiddleware";
+import { logRoute } from "@/decorators/logRoute";
+import { CreateAppVariableSchema } from "@/requests/admin/appVariable.request";
+import { createAppVariableHandler } from "@/routes/admin/appVariable.controller";
+import validateRequest from "@/middlewares/validateRequest";
 import {
   UpdateAppVariableParamSchema,
   UpdateAppVariableBodySchema,
-} from "../../requests/admin/appVariable.request";
-import { updateAppVariableHandler } from "./appVariable.controller";
+} from "@/requests/admin/appVariable.request";
+import { updateAppVariableHandler } from "@/routes/admin/appVariable.controller";
 
 const router = Router();
 

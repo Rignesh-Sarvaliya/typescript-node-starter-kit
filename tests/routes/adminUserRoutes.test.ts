@@ -1,8 +1,8 @@
-import { createAuthTestServer, AuthTestServer } from '../helpers/expressAuthTestHelper';
-import adminUserRoutes from '../../src/routes/admin/user';
-import * as userRepo from '../../src/repositories/user.repository';
+import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
+import adminUserRoutes from '@/routes/admin/user';
+import * as userRepo from '@/repositories/user.repository';
 
-jest.mock('../../src/repositories/user.repository');
+jest.mock('@/repositories/user.repository');
 
 let server: AuthTestServer;
 

@@ -1,4 +1,4 @@
-import { NotificationEntity } from "../../domain/entities/notification.entity";
+import { NotificationEntity } from "@/domain/entities/notification.entity";
 
 export const formatNotification = (n: NotificationEntity) => ({
   id: n.id,

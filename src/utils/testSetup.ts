@@ -4,10 +4,10 @@ import session from "express-session";
 import { PrismaClient } from "@prisma/client";
 import RedisStore from "connect-redis";
 import { createClient } from "redis";
-import { isProduction } from "../config/env";
-import { logger } from "./logger";
+import { isProduction } from "@/config/env";
+import { logger } from "@/utils/logger";
 // Use user routes for testing APIs
-import router from "../api/user.routes";
+import router from "@/api/user.routes";
 
 const prisma = new PrismaClient();
 

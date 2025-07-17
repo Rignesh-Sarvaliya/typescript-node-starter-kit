@@ -1,4 +1,4 @@
-import { signJwt, verifyJwt } from './jwt';
+import { signJwt, verifyJwt } from "@/utils/jwt";
 
 // Store currently issued auth tokens in memory
 const authTokenStore = new Map<number, string>();

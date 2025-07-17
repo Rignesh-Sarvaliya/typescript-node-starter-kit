@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { getProfile } from "./profile.controller";
-import { requireUserAuth } from "../../middlewares/authMiddleware";
-import { logRoute } from "../../decorators/logRoute";
-import validateRequest from "../../middlewares/validateRequest";
-import { UpdateProfileRequestSchema } from "../../resources/user/profile.request";
-import { updateProfile } from "./profile.controller";
+import { getProfile } from "@/routes/user/profile.controller";
+import { requireUserAuth } from "@/middlewares/authMiddleware";
+import { logRoute } from "@/decorators/logRoute";
+import validateRequest from "@/middlewares/validateRequest";
+import { UpdateProfileRequestSchema } from "@/resources/user/profile.request";
+import { updateProfile } from "@/routes/user/profile.controller";
 
 const router = Router();
 

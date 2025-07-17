@@ -1,7 +1,7 @@
 import { Worker } from "bullmq";
 import { createClient } from "redis";
-import { isProduction } from "../../config/env";
-import { logger } from "../../utils/logger";
+import { isProduction } from "@/config/env";
+import { logger } from "@/utils/logger";
 
 let connection: any = null;
 let notificationWorker: any = null;

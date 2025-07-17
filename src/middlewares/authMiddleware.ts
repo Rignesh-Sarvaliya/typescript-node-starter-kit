@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { Messages } from "../constants/messages";
-import { verifyAuthToken } from "../utils/authToken";
-import { verifyJwt } from "../utils/jwt";
-import { error } from "../utils/responseWrapper";
+import { Messages } from "@/constants/messages";
+import { verifyAuthToken } from "@/utils/authToken";
+import { verifyJwt } from "@/utils/jwt";
+import { error } from "@/utils/responseWrapper";
 
 export const requireUserAuth = (
   req: Request,

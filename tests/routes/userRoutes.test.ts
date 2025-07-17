@@ -1,10 +1,10 @@
-import { createAuthTestServer, AuthTestServer } from '../helpers/expressAuthTestHelper';
-import userRoutes from '../../src/api/user.routes';
-import * as userRepo from '../../src/repositories/user.repository';
-import * as notifRepo from '../../src/repositories/notification.repository';
+import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
+import userRoutes from '@/api/user.routes';
+import * as userRepo from '@/repositories/user.repository';
+import * as notifRepo from '@/repositories/notification.repository';
 
-jest.mock('../../src/repositories/user.repository');
-jest.mock('../../src/repositories/notification.repository');
+jest.mock('@/repositories/user.repository');
+jest.mock('@/repositories/notification.repository');
 
 let server: AuthTestServer;
 

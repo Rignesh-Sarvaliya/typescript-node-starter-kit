@@ -1,4 +1,4 @@
-import { UserEntity } from "../../domain/entities/user.entity";
+import { UserEntity } from "@/domain/entities/user.entity";
 
 export const formatUserResponse = (user: UserEntity) => ({
   id: user.id,
