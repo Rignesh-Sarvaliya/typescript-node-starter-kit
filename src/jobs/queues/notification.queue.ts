@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
-import { isProduction } from "../../config/env";
-import { logger } from "../../utils/logger";
+import { isProduction } from "@/config/env";
+import { logger } from "@/utils/logger";
 
 class MockQueue {
   async add() {
@@ -21,7 +21,7 @@ export const notificationQueue =
       })
     : (new MockQueue() as any);
 
-// import { notificationQueue } from "../../jobs/queues/notification.queue";
+// import { notificationQueue } from "@/jobs/queues/notification.queue";
 
 // await notificationQueue.add(
 //   "pushInApp",

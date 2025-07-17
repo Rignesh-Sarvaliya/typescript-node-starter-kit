@@ -1,16 +1,16 @@
-import { createTestServer, TestServer } from '../helpers/expressTestHelper';
-import authRoutes from '../../src/routes/user/auth';
-import * as userRepo from '../../src/repositories/user.repository';
-import * as hashUtils from '../../src/utils/hash';
-import * as otpUtils from '../../src/utils/otp';
-import * as resetTokenUtils from '../../src/utils/resetToken';
-import { logAppleCheck } from '../../src/jobs/logAppleCheck';
+import { createTestServer, TestServer } from '@tests/helpers/expressTestHelper';
+import authRoutes from '@/routes/user/auth';
+import * as userRepo from '@/repositories/user.repository';
+import * as hashUtils from '@/utils/hash';
+import * as otpUtils from '@/utils/otp';
+import * as resetTokenUtils from '@/utils/resetToken';
+import { logAppleCheck } from '@/jobs/logAppleCheck';
 
-jest.mock('../../src/repositories/user.repository');
-jest.mock('../../src/utils/hash');
-jest.mock('../../src/utils/otp');
-jest.mock('../../src/utils/resetToken');
-jest.mock('../../src/jobs/logAppleCheck');
+jest.mock('@/repositories/user.repository');
+jest.mock('@/utils/hash');
+jest.mock('@/utils/otp');
+jest.mock('@/utils/resetToken');
+jest.mock('@/jobs/logAppleCheck');
 
 let server: TestServer;
 

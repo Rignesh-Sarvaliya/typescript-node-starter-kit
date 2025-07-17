@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { NotificationEntity } from "../domain/entities/notification.entity";
+import { NotificationEntity } from "@/domain/entities/notification.entity";
 
 const prisma = new PrismaClient();
 

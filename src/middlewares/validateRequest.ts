@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { formatZodError } from "../utils/zodErrorFormatter";
-import { error } from "../utils/responseWrapper";
+import { formatZodError } from "@/utils/zodErrorFormatter";
+import { error } from "@/utils/responseWrapper";
 
 export default function validateRequest({
   body,

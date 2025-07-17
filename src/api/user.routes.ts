@@ -1,10 +1,10 @@
 import { Router } from "express";
-import initRoutes from "../routes/user/init";
-import authRoutes from "../routes/user/auth";
-import profileRoutes from "../routes/user/profile";
-import passwordRoutes from "../routes/user/password";
-import sessionRoutes from "../routes/user/session";
-import notificationRoutes from "../routes/user/notification";
+import initRoutes from "@/routes/user/init";
+import authRoutes from "@/routes/user/auth";
+import profileRoutes from "@/routes/user/profile";
+import passwordRoutes from "@/routes/user/password";
+import sessionRoutes from "@/routes/user/session";
+import notificationRoutes from "@/routes/user/notification";
 
 const router = Router();
 

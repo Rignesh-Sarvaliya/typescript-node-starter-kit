@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { findAdminById } from "../../repositories/admin.repository";
-import { formatAdminResponse } from "../../resources/admin/admin.resource";
-import { AdminMessages } from "../../constants/messages";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { success, error } from "../../utils/responseWrapper";
+import { findAdminById } from "@/repositories/admin.repository";
+import { formatAdminResponse } from "@/resources/admin/admin.resource";
+import { AdminMessages } from "@/constants/messages";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { success, error } from "@/utils/responseWrapper";
 
 export const getAdminProfile = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

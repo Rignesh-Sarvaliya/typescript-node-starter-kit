@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { getAdminProfile } from "./profile.controller";
-import { requireAdminAuth } from "../../middlewares/authMiddleware";
-import { logRoute } from "../../decorators/logRoute";
+import { requireAdminAuth } from "@/middlewares/authMiddleware";
+import { logRoute } from "@/decorators/logRoute";
 
 const router = Router();
 

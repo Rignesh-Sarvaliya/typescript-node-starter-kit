@@ -1,4 +1,4 @@
-import { isProduction } from "../config/env";
+import { isProduction } from "@/config/env";
 
 export const logger = {
   info: (...args: any[]) => {

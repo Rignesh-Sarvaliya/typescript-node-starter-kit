@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
-import { isProduction } from "../config/env";
-import { logger } from "../utils/logger";
+import { isProduction } from "@/config/env";
+import { logger } from "@/utils/logger";
 
 export const initSentry = () => {
   if (!isProduction) return;

@@ -3,8 +3,8 @@ import { ExpressAdapter } from "@bull-board/express";
 import { createBullBoard } from "@bull-board/api";
 import { BullAdapter } from "@bull-board/api/bullAdapter";
 
-import { emailQueue } from "../jobs/queues/email.queue";
-import { notificationQueue } from "../jobs/queues/notification.queue";
+import { emailQueue } from "@/jobs/queues/email.queue";
+import { notificationQueue } from "@/jobs/queues/notification.queue";
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath("/admin/queues");

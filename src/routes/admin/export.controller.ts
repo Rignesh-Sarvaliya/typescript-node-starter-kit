@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { ExportUserParamSchema } from "../../requests/admin/export.request";
-import { getAllUsersForExport } from "../../repositories/user.repository";
-import { logUserExport } from "../../jobs/export.jobs";
+import { ExportUserParamSchema } from "@/requests/admin/export.request";
+import { getAllUsersForExport } from "@/repositories/user.repository";
+import { logUserExport } from "@/jobs/export.jobs";
 import { Parser } from "json2csv";
 import XLSX from "xlsx";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { error } from "../../utils/responseWrapper";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { error } from "@/utils/responseWrapper";
 
 export const exportUsersHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

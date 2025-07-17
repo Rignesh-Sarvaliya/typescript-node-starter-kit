@@ -15,8 +15,8 @@ import { globalErrorHandler } from "./middlewares/errorHandler";
 import { requestLogger } from "./middlewares/requestLogger";
 import { success, error } from "./utils/responseWrapper";
 import { StatusCode } from "./constants/statusCodes";
-// import "../events/listeners/user.listener";
-// import "../events/listeners/admin.listener";
+// import "@/events/listeners/user.listener";
+// import "@/events/listeners/admin.listener";
 
 // Routes
 import userRoutes from "./api/user.routes";

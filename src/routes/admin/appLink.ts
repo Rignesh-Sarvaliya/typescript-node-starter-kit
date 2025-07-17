@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { getAppLinksHandler } from "./appLink.controller";
-import { requireAdminAuth } from "../../middlewares/authMiddleware";
-import { logRoute } from "../../decorators/logRoute";
+import { requireAdminAuth } from "@/middlewares/authMiddleware";
+import { logRoute } from "@/decorators/logRoute";
 import {
   UpdateAppLinkBodySchema,
   UpdateAppLinkParamSchema,
-} from "../../requests/admin/appLink.request";
+} from "@/requests/admin/appLink.request";
 import { updateAppLinkHandler } from "./appLink.controller";
-import validateRequest from "../../middlewares/validateRequest";
+import validateRequest from "@/middlewares/validateRequest";
 
 const router = Router();
 

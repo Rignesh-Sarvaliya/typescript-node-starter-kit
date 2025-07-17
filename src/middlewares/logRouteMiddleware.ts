@@ -1,3 +1,3 @@
-import { logRoute } from "../decorators/logRoute";
+import { logRoute } from "@/decorators/logRoute";
 
 export const logAppleRoute = logRoute("APPLE_DETAILS");

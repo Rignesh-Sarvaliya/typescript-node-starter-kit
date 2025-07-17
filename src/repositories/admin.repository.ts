@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { AdminEntity } from "../domain/entities/admin.entity";
+import { AdminEntity } from "@/domain/entities/admin.entity";
 
 const prisma = new PrismaClient();
 

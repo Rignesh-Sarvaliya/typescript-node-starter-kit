@@ -1,8 +1,8 @@
-import { appEmitter, APP_EVENTS } from "../emitters/appEmitter";
-import { sendMail } from "../../utils/sendMail";
-import { userWelcomeEmail } from "../../templates/mail/userWelcomeEmail";
-import { emailQueue } from "../../jobs/queues/email.queue";
-import { logger } from "../../utils/logger";
+import { appEmitter, APP_EVENTS } from "@/emitters/appEmitter";
+import { sendEmail } from "@utils/mailer";
+import { userWelcomeEmail } from "@/templates/mail/userWelcomeEmail";
+import { emailQueue } from "@/jobs/queues/email.queue";
+import { logger } from "@/utils/logger";
 
 appEmitter.on(APP_EVENTS.USER_REGISTERED, (payload) => {
   logger.info("📩 New user registered:", payload.email);
@@ -11,7 +11,7 @@ appEmitter.on(APP_EVENTS.USER_REGISTERED, (payload) => {
 
 
 appEmitter.on(APP_EVENTS.USER_REGISTERED, async ({ email, otp }) => {
-  await sendMail({
+  await sendEmail({
     to: email,
     subject: "Your Smartinbox OTP",
     html: `<p>Your OTP is: <b>${otp}</b></p>`,
@@ -22,7 +22,7 @@ appEmitter.on(APP_EVENTS.USER_REGISTERED, async ({ email, otp }) => {
 appEmitter.on(APP_EVENTS.USER_REGISTERED, async ({ name, email, otp }) => {
   const { subject, html } = userWelcomeEmail(name, otp);
 
-  // await sendMail({ to: email, subject, html });
+  // await sendEmail({ to: email, subject, html });
   await emailQueue.add(
     "sendWelcomeEmail",
     { email, name, otp },

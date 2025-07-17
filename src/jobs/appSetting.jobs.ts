@@ -1,4 +1,4 @@
-import { logger } from "../utils/logger";
+import { logger } from "@/utils/logger";
 
 export const logAppSettingCreated = (type: string) => {
   logger.info(`[APP_SETTING] New setting created for ${type}`);

@@ -1,28 +1,28 @@
 import { Request, Response, NextFunction } from "express";
-import { findUserByEmail } from "../../repositories/user.repository";
-import { createUser } from "../../services/user.service";
-import { hashPassword, comparePassword } from "../../utils/hash";
-import { generateSession } from "../../utils/session";
-import { formatUserResponse } from "../../resources/user/user.resource";
-import { AuthMessages, DefaultUserRole } from "../../constants/auth";
+import { findUserByEmail } from "@/repositories/user.repository";
+import { createUser } from "@/services/user.service";
+import { hashPassword, comparePassword } from "@/utils/hash";
+import { generateSession } from "@/utils/session";
+import { formatUserResponse } from "@/resources/user/user.resource";
+import { AuthMessages, DefaultUserRole } from "@/constants/auth";
 
-import { logAppleCheck } from "../../jobs/logAppleCheck";
-import { userEmitter } from "../../events/emitters/userEmitter";
-import { logRegistration, logLogin } from "../../jobs/auth.jobs";
-import { generateOtp, saveOtpToRedis } from "../../utils/otp";
-import { logOtpSend } from "../../jobs/otp.jobs";
-import { generateResetToken } from "../../utils/resetToken";
-import { ResetPasswordConstants } from "../../constants/reset";
-import { logResetLink } from "../../jobs/reset.jobs";
-import { Email } from "../../domain/valueObjects/email.vo";
-import { Password } from "../../domain/valueObjects/password.vo";
-import { UserEntity } from "../../domain/entities/user.entity";
-import { appEmitter, APP_EVENTS } from "../../events/emitters/appEmitter";
+import { logAppleCheck } from "@/jobs/logAppleCheck";
+import { userEmitter } from "@/events/emitters/userEmitter";
+import { logRegistration, logLogin } from "@/jobs/auth.jobs";
+import { generateOtp, saveOtpToRedis } from "@/utils/otp";
+import { logOtpSend } from "@/jobs/otp.jobs";
+import { generateResetToken } from "@/utils/resetToken";
+import { ResetPasswordConstants } from "@/constants/reset";
+import { logResetLink } from "@/jobs/reset.jobs";
+import { Email } from "@/domain/valueObjects/email.vo";
+import { Password } from "@/domain/valueObjects/password.vo";
+import { UserEntity } from "@/domain/entities/user.entity";
+import { appEmitter, APP_EVENTS } from "@/events/emitters/appEmitter";
 
-import { asyncHandler } from "../../utils/asyncHandler";
-import { issueAuthToken } from "../../utils/authToken";
-import { signJwt } from "../../utils/jwt";
-import { success, error } from "../../utils/responseWrapper";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { issueAuthToken } from "@/utils/authToken";
+import { signJwt } from "@/utils/jwt";
+import { success, error } from "@/utils/responseWrapper";
 
 
 const registerUser = asyncHandler(
