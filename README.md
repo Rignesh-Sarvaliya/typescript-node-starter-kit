@@ -37,6 +37,25 @@ tests/                   # Jest + Supertest suites
 
 ---
 
+## Microservices Demo
+
+This repository includes a simple example of how functionality can be moved into
+independent services. The `microservices/` directory contains standalone
+services. Each service runs its own Express server and can be developed or
+deployed separately from the main application. The provided `user-service`
+illustrates the approach:
+
+```bash
+cd microservices/user-service
+npm install
+npm run dev
+```
+
+The main application remains unchanged, but the user service now exposes a
+`/api/users/hello` endpoint on its own port.
+
+---
+
 ## 🛠 Installation
 
 Install the dependencies:
