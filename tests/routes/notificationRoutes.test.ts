@@ -1,9 +1,11 @@
 import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
 import notificationRoutes from '@/routes/user/notification';
 import * as notifRepo from '@/repositories/notification.repository';
+import * as notifService from '@/services/notification.service';
 import * as notifJobs from '@/jobs/notification.jobs';
 
 jest.mock('@/repositories/notification.repository');
+jest.mock('@/services/notification.service');
 jest.mock('@/jobs/notification.jobs');
 
 let server: AuthTestServer;
@@ -39,7 +41,7 @@ describe('Notification Routes', () => {
 
   describe('GET /api/user/notifications/status/change/:status', () => {
     it('should update notification status', async () => {
-      (notifRepo.updateUserNotificationStatus as jest.Mock).mockResolvedValueOnce(1);
+      (notifService.updateUserNotificationStatus as jest.Mock).mockResolvedValueOnce(1);
       const res = await server.request.get('/api/user/notifications/status/change/read');
       expect(res.status).toBe(200);
     });
@@ -50,7 +52,7 @@ describe('Notification Routes', () => {
     });
 
     it('should handle server errors', async () => {
-      (notifRepo.updateUserNotificationStatus as jest.Mock).mockRejectedValueOnce(new Error('fail'));
+      (notifService.updateUserNotificationStatus as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await server.request.get('/api/user/notifications/status/change/read');
       expect(res.status).toBe(500);
     });
@@ -58,13 +60,13 @@ describe('Notification Routes', () => {
 
   describe('GET /api/user/notifications/clear-all', () => {
     it('should clear notifications', async () => {
-      (notifRepo.deleteAllNotificationsForUser as jest.Mock).mockResolvedValueOnce(3);
+      (notifService.deleteAllNotificationsForUser as jest.Mock).mockResolvedValueOnce(3);
       const res = await server.request.get('/api/user/notifications/clear-all');
       expect(res.status).toBe(200);
     });
 
     it('should handle server errors', async () => {
-      (notifRepo.deleteAllNotificationsForUser as jest.Mock).mockRejectedValueOnce(new Error('fail'));
+      (notifService.deleteAllNotificationsForUser as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await server.request.get('/api/user/notifications/clear-all');
       expect(res.status).toBe(500);
     });

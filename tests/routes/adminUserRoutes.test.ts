@@ -1,8 +1,8 @@
 import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
 import adminUserRoutes from '@/routes/admin/user';
-import * as userRepo from '@/repositories/user.repository';
+import * as userService from '@/services/user.service';
 
-jest.mock('@/repositories/user.repository');
+jest.mock('@/services/user.service');
 
 let server: AuthTestServer;
 
@@ -17,7 +17,7 @@ beforeEach(() => {
 describe('Admin User Routes', () => {
   describe('GET /api/admin/user/users', () => {
     it('should list users', async () => {
-      (userRepo.getAllUsers as jest.Mock).mockResolvedValueOnce([]);
+      (userService.getAllUsers as jest.Mock).mockResolvedValueOnce([]);
       const res = await server.request.get('/api/admin/user/users');
       expect(res.status).toBe(200);
     });
@@ -29,7 +29,7 @@ describe('Admin User Routes', () => {
     });
 
     it('should handle server errors', async () => {
-      (userRepo.getAllUsers as jest.Mock).mockRejectedValueOnce(new Error('fail'));
+      (userService.getAllUsers as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await server.request.get('/api/admin/user/users');
       expect(res.status).toBe(500);
     });
@@ -37,7 +37,7 @@ describe('Admin User Routes', () => {
 
   describe('POST /api/admin/user/users/:id/update', () => {
     it('should update user', async () => {
-      (userRepo.updateUserById as jest.Mock).mockResolvedValueOnce({ id: 1 });
+      (userService.updateUserById as jest.Mock).mockResolvedValueOnce({ id: 1 });
       const res = await server.request
         .post('/api/admin/user/users/1/update')
         .send({ name: 'John' });
@@ -52,7 +52,7 @@ describe('Admin User Routes', () => {
     });
 
     it('should handle server errors', async () => {
-      (userRepo.updateUserById as jest.Mock).mockRejectedValueOnce(new Error('fail'));
+      (userService.updateUserById as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await server.request
         .post('/api/admin/user/users/1/update')
         .send({ name: 'John' });
@@ -62,7 +62,7 @@ describe('Admin User Routes', () => {
 
   describe('GET /api/admin/user/users/:id/toggle', () => {
     it('should toggle user status', async () => {
-      (userRepo.toggleUserStatus as jest.Mock).mockResolvedValueOnce({ id: 1, status: true });
+      (userService.toggleUserStatus as jest.Mock).mockResolvedValueOnce({ id: 1, status: true });
       const res = await server.request.get('/api/admin/user/users/1/toggle');
       expect(res.status).toBe(200);
     });
@@ -73,7 +73,7 @@ describe('Admin User Routes', () => {
     });
 
     it('should handle server errors', async () => {
-      (userRepo.toggleUserStatus as jest.Mock).mockRejectedValueOnce(new Error('fail'));
+      (userService.toggleUserStatus as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await server.request.get('/api/admin/user/users/1/toggle');
       expect(res.status).toBe(500);
     });
@@ -81,7 +81,7 @@ describe('Admin User Routes', () => {
 
   describe('GET /api/admin/user/users/:id/delete', () => {
     it('should delete user', async () => {
-      (userRepo.softDeleteUser as jest.Mock).mockResolvedValueOnce({ id: 1 });
+      (userService.softDeleteUser as jest.Mock).mockResolvedValueOnce({ id: 1 });
       const res = await server.request.get('/api/admin/user/users/1/delete');
       expect(res.status).toBe(200);
     });
@@ -92,7 +92,7 @@ describe('Admin User Routes', () => {
     });
 
     it('should handle server errors', async () => {
-      (userRepo.softDeleteUser as jest.Mock).mockRejectedValueOnce(new Error('fail'));
+      (userService.softDeleteUser as jest.Mock).mockRejectedValueOnce(new Error('fail'));
       const res = await server.request.get('/api/admin/user/users/1/delete');
       expect(res.status).toBe(500);
     });
