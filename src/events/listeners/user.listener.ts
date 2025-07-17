@@ -1,4 +1,4 @@
-import { appEmitter, APP_EVENTS } from "@/emitters/appEmitter";
+import { appEmitter, APP_EVENTS } from "@/events/emitters/userEmitter";
 import { sendEmail } from "@utils/mailer";
 import { userWelcomeEmail } from "@/templates/mail/userWelcomeEmail";
 import { emailQueue } from "@/jobs/queues/email.queue";
@@ -9,7 +9,6 @@ appEmitter.on(APP_EVENTS.USER_REGISTERED, (payload) => {
   // Optionally send welcome email or track analytics
 });
 
-
 appEmitter.on(APP_EVENTS.USER_REGISTERED, async ({ email, otp }) => {
   await sendEmail({
     to: email,
@@ -17,7 +16,6 @@ appEmitter.on(APP_EVENTS.USER_REGISTERED, async ({ email, otp }) => {
     html: `<p>Your OTP is: <b>${otp}</b></p>`,
   });
 });
-
 
 appEmitter.on(APP_EVENTS.USER_REGISTERED, async ({ name, email, otp }) => {
   const { subject, html } = userWelcomeEmail(name, otp);
@@ -35,5 +33,4 @@ appEmitter.on(APP_EVENTS.USER_REGISTERED, async ({ name, email, otp }) => {
       delay: 5000, // initial delay before first execution (optional)
     }
   );
-
 });
