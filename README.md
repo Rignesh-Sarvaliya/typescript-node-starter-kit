@@ -33,26 +33,27 @@ src/                     # Application source
 prisma/                  # Prisma schema, migrations and seeds
 scripts/                 # Helper scripts (workers, CLI utilities)
 tests/                   # Jest + Supertest suites
+services/                # Independent microservices
 ```
 
 ---
 
 ## Microservices Demo
 
-This repository includes a simple example of how functionality can be moved into
-independent services. The `microservices/` directory contains standalone
-services. Each service runs its own Express server and can be developed or
-deployed separately from the main application. The provided `user-service`
-illustrates the approach:
+This repository includes a small example demonstrating how to structure independent services under `services/`. Each service is a standalone Node.js project. The provided `user-service` can be run with:
 
 ```bash
-cd microservices/user-service
+cd services/user-service
 npm install
 npm run dev
 ```
 
-The main application remains unchanged, but the user service now exposes a
-`/api/users/hello` endpoint on its own port.
+It listens on its own port and exposes `/api/users/hello`. Additional services can follow the same layout.
+
+### High Level Approach
+- Split domains into independent services under `services/`
+- Each service maintains its own dependencies and build
+- Services communicate via REST or messaging as needed
 
 ---
 
