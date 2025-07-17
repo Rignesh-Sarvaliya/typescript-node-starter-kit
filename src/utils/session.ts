@@ -15,6 +15,10 @@ export const generateSession = async (
 
 export const destroySession = (req: any): Promise<void> => {
   return new Promise((resolve, reject) => {
+    if (!req.session || typeof req.session.destroy !== "function") {
+      // No active session to destroy
+      return resolve();
+    }
     req.session.destroy((err: any) => {
       if (err) return reject(err);
       resolve();
