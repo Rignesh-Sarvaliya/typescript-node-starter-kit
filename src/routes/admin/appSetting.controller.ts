@@ -1,22 +1,22 @@
 import { Request, Response, NextFunction } from "express";
-import { GetAppSettingsRequestSchema } from "../../requests/admin/appSetting.request";
-import { findAllAppSettings } from "../../repositories/appSetting.repository";
-import { formatAppSettingsList } from "../../resources/admin/appSetting.resource";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { CreateAppSettingRequestSchema } from "../../requests/admin/appSetting.request";
-import { createAppSetting } from "../../services/appSetting.actions";
-import { formatAppSetting } from "../../resources/admin/appSetting.resource";
-import { logAppSettingCreated } from "../../jobs/appSetting.jobs";
+import { GetAppSettingsRequestSchema } from "@/requests/admin/appSetting.request";
+import { findAllAppSettings } from "@/repositories/appSetting.repository";
+import { formatAppSettingsList } from "@/resources/admin/appSetting.resource";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { CreateAppSettingRequestSchema } from "@/requests/admin/appSetting.request";
+import { createAppSetting } from "@/services/appSetting.actions";
+import { formatAppSetting } from "@/resources/admin/appSetting.resource";
+import { logAppSettingCreated } from "@/jobs/appSetting.jobs";
 import {
   UpdateAppSettingRequestSchema,
   UpdateAppSettingParamSchema,
-} from "../../requests/admin/appSetting.request";
-import { updateAppSetting } from "../../services/appSetting.actions";
-import { logAppSettingUpdated } from "../../jobs/appSetting.jobs";
-import { DeleteAppSettingParamSchema } from "../../requests/admin/appSetting.request";
-import { softDeleteAppSetting } from "../../services/appSetting.actions";
-import { logAppSettingDeleted } from "../../jobs/appSetting.jobs";
-import { success, error } from "../../utils/responseWrapper";
+} from "@/requests/admin/appSetting.request";
+import { updateAppSetting } from "@/services/appSetting.actions";
+import { logAppSettingUpdated } from "@/jobs/appSetting.jobs";
+import { DeleteAppSettingParamSchema } from "@/requests/admin/appSetting.request";
+import { softDeleteAppSetting } from "@/services/appSetting.actions";
+import { logAppSettingDeleted } from "@/jobs/appSetting.jobs";
+import { success, error } from "@/utils/responseWrapper";
 
 export const getAppSettings = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

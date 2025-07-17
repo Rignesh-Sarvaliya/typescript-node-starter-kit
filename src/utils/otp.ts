@@ -1,6 +1,6 @@
-import { redisClient } from "../config/redis.config";
-import { OtpConstants } from "../constants/otp";
-import { isProduction } from "../config/env";
+import { redisClient } from "@/config/redis.config";
+import { OtpConstants } from "@/constants/otp";
+import { isProduction } from "@/config/env";
 
 // In-memory OTP store for development
 const otpStore = new Map<string, { otp: string; expiry: number }>();

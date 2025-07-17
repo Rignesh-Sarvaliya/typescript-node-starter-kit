@@ -1,4 +1,4 @@
-import { logger } from "../utils/logger";
+import { logger } from "@/utils/logger";
 
 export const logAppVariableCreated = (name: string) => {
   logger.info(`[APP_VARIABLE] Created variable: ${name}`);

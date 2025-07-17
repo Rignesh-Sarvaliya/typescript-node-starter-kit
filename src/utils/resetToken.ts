@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
-import { redisClient } from "../config/redis.config";
-import { ResetPasswordConstants } from "../constants/reset";
-import { isProduction } from "../config/env";
+import { redisClient } from "@/config/redis.config";
+import { ResetPasswordConstants } from "@/constants/reset";
+import { isProduction } from "@/config/env";
 
 // In-memory reset token store for development
 const resetTokenStore = new Map<string, { userId: string; expiry: number }>();

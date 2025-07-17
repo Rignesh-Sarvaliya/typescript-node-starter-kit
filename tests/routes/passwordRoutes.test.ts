@@ -1,17 +1,17 @@
-import { createAuthTestServer, AuthTestServer } from '../helpers/expressAuthTestHelper';
-import passwordRoutes from '../../src/routes/user/password';
-import * as userRepo from '../../src/repositories/user.repository';
-import * as hashUtils from '../../src/utils/hash';
-import * as attemptUtils from '../../src/utils/passwordAttempt';
-import * as passwordJobs from '../../src/jobs/password.jobs';
-import { userEmitter } from '../../src/events/emitters/userEmitter';
-import * as resetTokenUtils from '../../src/utils/resetToken';
+import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
+import passwordRoutes from '@/routes/user/password';
+import * as userRepo from '@/repositories/user.repository';
+import * as hashUtils from '@/utils/hash';
+import * as attemptUtils from '@/utils/passwordAttempt';
+import * as passwordJobs from '@/jobs/password.jobs';
+import { userEmitter } from '@/events/emitters/userEmitter';
+import * as resetTokenUtils from '@/utils/resetToken';
 
-jest.mock('../../src/repositories/user.repository');
-jest.mock('../../src/utils/hash');
-jest.mock('../../src/utils/passwordAttempt');
-jest.mock('../../src/jobs/password.jobs');
-jest.mock('../../src/utils/resetToken');
+jest.mock('@/repositories/user.repository');
+jest.mock('@/utils/hash');
+jest.mock('@/utils/passwordAttempt');
+jest.mock('@/jobs/password.jobs');
+jest.mock('@/utils/resetToken');
 
 let server: AuthTestServer;
 

@@ -1,12 +1,12 @@
-import { createTestServer, TestServer } from '../helpers/expressTestHelper';
-import adminAuthRoutes from '../../src/routes/admin/auth';
-import * as adminRepo from '../../src/repositories/admin.repository';
-import * as hashUtils from '../../src/utils/hash';
-import * as sessionUtils from '../../src/utils/session';
+import { createTestServer, TestServer } from '@tests/helpers/expressTestHelper';
+import adminAuthRoutes from '@/routes/admin/auth';
+import * as adminRepo from '@/repositories/admin.repository';
+import * as hashUtils from '@/utils/hash';
+import * as sessionUtils from '@/utils/session';
 
-jest.mock('../../src/repositories/admin.repository');
-jest.mock('../../src/utils/hash');
-jest.mock('../../src/utils/session');
+jest.mock('@/repositories/admin.repository');
+jest.mock('@/utils/hash');
+jest.mock('@/utils/session');
 
 let server: TestServer;
 

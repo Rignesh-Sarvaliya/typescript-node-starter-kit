@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { success } from "../utils/responseWrapper";
-import { StatusCode } from "../constants/statusCodes";
+import { success } from "@/utils/responseWrapper";
+import { StatusCode } from "@/constants/statusCodes";
 
 const router = Router();
 

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { createClient } from "redis";
-import { error } from "../utils/responseWrapper";
-import { isProduction } from "../config/env";
-import { logger } from "../utils/logger";
+import { error } from "@/utils/responseWrapper";
+import { isProduction } from "@/config/env";
+import { logger } from "@/utils/logger";
 
 // In-memory rate limiting fallback
 const memoryStore = new Map<string, { count: number; resetTime: number }>();

@@ -1,12 +1,12 @@
-import { createAuthTestServer, AuthTestServer } from '../helpers/expressAuthTestHelper';
-import sessionRoutes from '../../src/routes/user/session';
-import * as sessionUtils from '../../src/utils/session';
-import * as attemptUtils from '../../src/utils/passwordAttempt';
-import * as sessionJobs from '../../src/jobs/session.jobs';
+import { createAuthTestServer, AuthTestServer } from '@tests/helpers/expressAuthTestHelper';
+import sessionRoutes from '@/routes/user/session';
+import * as sessionUtils from '@/utils/session';
+import * as attemptUtils from '@/utils/passwordAttempt';
+import * as sessionJobs from '@/jobs/session.jobs';
 
-jest.mock('../../src/utils/session');
-jest.mock('../../src/utils/passwordAttempt');
-jest.mock('../../src/jobs/session.jobs');
+jest.mock('@/utils/session');
+jest.mock('@/utils/passwordAttempt');
+jest.mock('@/jobs/session.jobs');
 
 let server: AuthTestServer;
 

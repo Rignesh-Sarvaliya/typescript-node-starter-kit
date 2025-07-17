@@ -1,6 +1,6 @@
 // Conditional Redis import to avoid connection attempts in development
 import { isProduction } from "./env";
-import { logger } from "../utils/logger";
+import { logger } from "@/utils/logger";
 
 let redisClient: any = null;
 

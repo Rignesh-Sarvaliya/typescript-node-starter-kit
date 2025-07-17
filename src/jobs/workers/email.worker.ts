@@ -1,9 +1,9 @@
 import { Worker } from "bullmq";
 import { createClient } from "redis";
-import { sendMail } from "../../utils/sendMail";
-import { userWelcomeEmail } from "../../templates/mail/userWelcomeEmail";
-import { isProduction } from "../../config/env";
-import { logger } from "../../utils/logger";
+import { sendEmail } from "@utils/mailer";
+import { userWelcomeEmail } from "@/templates/mail/userWelcomeEmail";
+import { isProduction } from "@/config/env";
+import { logger } from "@/utils/logger";
 
 let connection: any = null;
 let emailWorker: any = null;
@@ -17,7 +17,7 @@ if (isProduction) {
         const { email, name, otp } = job.data;
         const { subject, html } = userWelcomeEmail(name, otp);
 
-        await sendMail({ to: email, subject, html });
+        await sendEmail({ to: email, subject, html });
       }
     },
     { connection }

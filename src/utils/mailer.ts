@@ -1,6 +1,6 @@
-import { mailTransport } from "../config/mail.config";
+import { mailTransport } from "@/config/mail.config";
 
-export const sendMail = async ({
+export const sendEmail = async ({
   to,
   subject,
   html,

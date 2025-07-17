@@ -1,4 +1,4 @@
-import { AdminEntity } from "../../domain/entities/admin.entity";
+import { AdminEntity } from "@/domain/entities/admin.entity";
 
 export const formatAdminResponse = (admin: AdminEntity) => ({
   id: admin.id,

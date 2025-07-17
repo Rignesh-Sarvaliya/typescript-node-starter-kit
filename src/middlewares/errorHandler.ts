@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { error } from "../utils/responseWrapper";
-import { StatusCode } from "../constants/statusCodes";
-import { captureError } from "../telemetry/sentry"; // already used in your controllers
-import { logger } from "../utils/logger";
+import { error } from "@/utils/responseWrapper";
+import { StatusCode } from "@/constants/statusCodes";
+import { captureError } from "@/telemetry/sentry"; // already used in your controllers
+import { logger } from "@/utils/logger";
 
 export const globalErrorHandler = (
   err: any,

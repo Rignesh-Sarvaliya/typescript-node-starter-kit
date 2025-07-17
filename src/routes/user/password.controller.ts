@@ -3,21 +3,21 @@ import {
   ChangePasswordRequestSchema,
   ResetPasswordBodySchema,
   ResetPasswordParamsSchema,
-} from "../../requests/user/password.request";
-import { comparePassword, hashPassword } from "../../utils/hash";
-import { changeUserPassword } from "../../services/user.service";
-import { findUserWithPasswordById } from "../../repositories/user.repository";
-import { Password } from "../../domain/valueObjects/password.vo";
+} from "@/requests/user/password.request";
+import { comparePassword, hashPassword } from "@/utils/hash";
+import { changeUserPassword } from "@/services/user.service";
+import { findUserWithPasswordById } from "@/repositories/user.repository";
+import { Password } from "@/domain/valueObjects/password.vo";
 import {
   isBlocked,
   recordFailedAttempt,
   clearFailedAttempts,
-} from "../../utils/passwordAttempt";
-import { logPasswordChange } from "../../jobs/password.jobs";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { userEmitter } from "../../events/emitters/userEmitter";
-import { success, error } from "../../utils/responseWrapper";
-import { getUserIdFromToken, deleteResetToken } from "../../utils/resetToken";
+} from "@/utils/passwordAttempt";
+import { logPasswordChange } from "@/jobs/password.jobs";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { userEmitter } from "@/events/emitters/userEmitter";
+import { success, error } from "@/utils/responseWrapper";
+import { getUserIdFromToken, deleteResetToken } from "@/utils/resetToken";
 
 export const changePassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

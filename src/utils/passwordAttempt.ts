@@ -1,5 +1,5 @@
-import { redisClient } from "../config/redis.config";
-import { isProduction } from "../config/env";
+import { redisClient } from "@/config/redis.config";
+import { isProduction } from "@/config/env";
 
 const ATTEMPT_PREFIX = "password_attempt:";
 const ATTEMPT_LIMIT = 5;

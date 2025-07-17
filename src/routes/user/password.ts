@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { changePassword, resetPassword } from "./password.controller";
-import { requireUserAuth } from "../../middlewares/authMiddleware";
-import validateRequest from "../../middlewares/validateRequest";
+import { requireUserAuth } from "@/middlewares/authMiddleware";
+import validateRequest from "@/middlewares/validateRequest";
 import {
   ChangePasswordRequestSchema,
   ResetPasswordBodySchema,
   ResetPasswordParamsSchema,
-} from "../../requests/user/password.request";
-import { logRoute } from "../../decorators/logRoute";
+} from "@/requests/user/password.request";
+import { logRoute } from "@/decorators/logRoute";
 
 const router = Router();
 
