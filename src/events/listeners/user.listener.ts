@@ -1,4 +1,4 @@
-import { appEmitter, APP_EVENTS } from "@/emitters/appEmitter";
+import { appEmitter, APP_EVENTS } from "@/events/emitters/appEmitter";
 import { sendEmail } from "@utils/mailer";
 import { userWelcomeEmail } from "@/templates/mail/userWelcomeEmail";
 import { emailQueue } from "@/jobs/queues/email.queue";

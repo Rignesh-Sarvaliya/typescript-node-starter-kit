@@ -1,4 +1,4 @@
-import { userEmitter } from "@/emitters/userEmitter";
+import { userEmitter } from "@/events/emitters/userEmitter";
 import { logger } from "@/utils/logger";
 
 userEmitter.on("otp.sent", ({ email, otp }) => {
