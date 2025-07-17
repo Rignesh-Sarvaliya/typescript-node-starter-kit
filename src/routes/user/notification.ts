@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { getNotifications } from "./notification.controller";
+import { getNotifications } from "@/routes/user/notification.controller";
 import { requireUserAuth } from "@/middlewares/authMiddleware";
 import { logRoute } from "@/decorators/logRoute";
-import { changeNotificationStatus } from "./notification.controller";
+import { changeNotificationStatus } from "@/routes/user/notification.controller";
 import validateRequest from "@/middlewares/validateRequest";
 import { NotificationStatusParamSchema } from "@/requests/user/notification.request";
-import { clearAllNotifications } from "./notification.controller";
+import { clearAllNotifications } from "@/routes/user/notification.controller";
 
 const router = Router();
 

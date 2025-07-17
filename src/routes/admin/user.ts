@@ -1,17 +1,17 @@
 import { Router } from "express";
-import { getAllUsersHandler } from "./user.controller";
+import { getAllUsersHandler } from "@/routes/admin/user.controller";
 import { requireAdminAuth } from "@/middlewares/authMiddleware";
 import { logRoute } from "@/decorators/logRoute";
 import {
   UpdateUserParamSchema,
   UpdateUserBodySchema,
 } from "@/requests/admin/user.request";
-import { updateUserHandler } from "./user.controller";
+import { updateUserHandler } from "@/routes/admin/user.controller";
 import validateRequest from "@/middlewares/validateRequest";
 import { ToggleUserParamSchema } from "@/requests/admin/user.request";
-import { toggleUserStatusHandler } from "./user.controller";
+import { toggleUserStatusHandler } from "@/routes/admin/user.controller";
 import { DeleteUserParamSchema } from "@/requests/admin/user.request";
-import { deleteUserHandler } from "./user.controller";
+import { deleteUserHandler } from "@/routes/admin/user.controller";
 
 const router = Router();
 

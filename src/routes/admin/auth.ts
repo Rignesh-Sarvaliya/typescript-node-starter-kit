@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginAdmin } from "./auth.controller";
+import { loginAdmin } from "@/routes/admin/auth.controller";
 import { AdminLoginRequestSchema } from "@/requests/admin/auth.request";
 import validateRequest from "@/middlewares/validateRequest";
 import { logRoute } from "@/decorators/logRoute";

@@ -3,28 +3,28 @@ import helmet from "helmet";
 import compression from "compression";
 import { createServer } from "http";
 import session from "express-session";
-import { logger } from "./utils/logger";
-import { redisClient } from "./config/redis.config";
+import { logger } from "@/utils/logger";
+import { redisClient } from "@/config/redis.config";
 import RedisStore from "connect-redis";
-import { isProduction } from "./config/env";
-// import { errorHandler } from "./middlewares/errorHandler";
-import corsConfig from "./config/cors.config";
-import sessionConfig from "./config/session.config";
-import { globalRateLimiter } from "./middlewares/globalRateLimiter";
-import { globalErrorHandler } from "./middlewares/errorHandler";
-import { requestLogger } from "./middlewares/requestLogger";
-import { success, error } from "./utils/responseWrapper";
-import { StatusCode } from "./constants/statusCodes";
+import { isProduction } from "@/config/env";
+// import { errorHandler } from "@/middlewares/errorHandler";
+import corsConfig from "@/config/cors.config";
+import sessionConfig from "@/config/session.config";
+import { globalRateLimiter } from "@/middlewares/globalRateLimiter";
+import { globalErrorHandler } from "@/middlewares/errorHandler";
+import { requestLogger } from "@/middlewares/requestLogger";
+import { success, error } from "@/utils/responseWrapper";
+import { StatusCode } from "@/constants/statusCodes";
 // import "@/events/listeners/user.listener";
 // import "@/events/listeners/admin.listener";
 
 // Routes
-import userRoutes from "./api/user.routes";
-import adminRoutes from "./api/admin.routes";
-import healthRoutes from "./api/health.routes";
-import docsRoutes from "./api/docs.routes";
-import bullBoardRoutes from "./api/bull.routes";
-import resetViewRoutes from "./routes/reset.view";
+import userRoutes from "@/api/user.routes";
+import adminRoutes from "@/api/admin.routes";
+import healthRoutes from "@/api/health.routes";
+import docsRoutes from "@/api/docs.routes";
+import bullBoardRoutes from "@/api/bull.routes";
+import resetViewRoutes from "@/routes/reset.view";
 
 import type { Server } from "http";
 

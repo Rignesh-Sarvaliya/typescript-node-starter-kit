@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAdminProfile } from "./profile.controller";
+import { getAdminProfile } from "@/routes/admin/profile.controller";
 import { requireAdminAuth } from "@/middlewares/authMiddleware";
 import { logRoute } from "@/decorators/logRoute";
 

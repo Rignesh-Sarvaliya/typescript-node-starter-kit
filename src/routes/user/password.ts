@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changePassword, resetPassword } from "./password.controller";
+import { changePassword, resetPassword } from "@/routes/user/password.controller";
 import { requireUserAuth } from "@/middlewares/authMiddleware";
 import validateRequest from "@/middlewares/validateRequest";
 import {

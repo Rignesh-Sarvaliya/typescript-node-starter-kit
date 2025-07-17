@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import RedisStore from "connect-redis";
 import { createClient } from "redis";
 import { isProduction } from "@/config/env";
-import { logger } from "./logger";
+import { logger } from "@/utils/logger";
 // Use user routes for testing APIs
 import router from "@/api/user.routes";
 

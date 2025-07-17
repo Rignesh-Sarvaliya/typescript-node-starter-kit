@@ -1,18 +1,18 @@
 import { Router } from "express";
-import { getAppSettings } from "./appSetting.controller";
+import { getAppSettings } from "@/routes/admin/appSetting.controller";
 import { requireAdminAuth } from "@/middlewares/authMiddleware";
 import validateRequest from "@/middlewares/validateRequest";
 import { GetAppSettingsRequestSchema } from "@/requests/admin/appSetting.request";
 import { logRoute } from "@/decorators/logRoute";
-import { createAppSettingHandler } from "./appSetting.controller";
+import { createAppSettingHandler } from "@/routes/admin/appSetting.controller";
 import { CreateAppSettingRequestSchema } from "@/requests/admin/appSetting.request";
 import {
   UpdateAppSettingParamSchema,
   UpdateAppSettingRequestSchema,
 } from "@/requests/admin/appSetting.request";
-import { updateAppSettingHandler } from "./appSetting.controller";
+import { updateAppSettingHandler } from "@/routes/admin/appSetting.controller";
 import { DeleteAppSettingParamSchema } from "@/requests/admin/appSetting.request";
-import { deleteAppSettingHandler } from "./appSetting.controller";
+import { deleteAppSettingHandler } from "@/routes/admin/appSetting.controller";
 
 const router = Router();
 

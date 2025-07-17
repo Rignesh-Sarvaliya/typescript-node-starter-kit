@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { exportUsersHandler } from "./export.controller";
+import { exportUsersHandler } from "@/routes/admin/export.controller";
 import { requireAdminAuth } from "@/middlewares/authMiddleware";
 import { ExportUserParamSchema } from "@/requests/admin/export.request";
 import validateRequest from "@/middlewares/validateRequest";
