@@ -22,6 +22,6 @@
     "noImplicitAny": false,
     "types": ["node", "jest"]
   },
-  "include": ["src", "tests", "prisma/seed.ts"],
+  "include": ["src", "tests", "prisma/seed.ts", "services"],
   "exclude": ["node_modules", "dist"]
 }

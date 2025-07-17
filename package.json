@@ -4,7 +4,7 @@
   "description": "This is a starter kit for building APIs using Node.js, TypeScript, Prisma, and Redis.",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon --require tsconfig-paths/register src/index.ts",
+    "dev": "ts-node services/gateway/src/server.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "ts-node prisma/seed.ts",
@@ -12,7 +12,14 @@
     "worker": "ts-node -r tsconfig-paths/register scripts/worker.ts",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
-    "prisma:studio": "npx prisma studio"
+    "prisma:studio": "npx prisma studio",
+    "dev:gateway": "ts-node services/gateway/src/server.ts",
+    "dev:user": "ts-node services/user/user-service/src/server.ts",
+    "dev:admin": "ts-node services/admin/admin-service/src/server.ts",
+    "dev:admin-auth": "ts-node services/admin/admin-auth-service/src/server.ts",
+    "dev:admin-user": "ts-node services/admin/admin-user-service/src/server.ts",
+    "dev:admin-notification": "ts-node services/admin/admin-notification-service/src/server.ts",
+    "dev:user-auth": "ts-node services/user/user-auth-service/src/server.ts"
   },
   "dependencies": {
     "@bull-board/api": "^4.10.0",

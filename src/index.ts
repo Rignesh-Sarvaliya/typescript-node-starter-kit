@@ -2,7 +2,7 @@ import "dotenv/config";
 import "@/types/express";
 import "@/config/env";
 import { initSentry } from "@/telemetry/sentry";
-import { startServer } from "@/server";
+import { startGateway } from "../services/gateway/src/server";
 import { logger } from "@/utils/logger";
 import "@/events/listeners/otpListener";
 
@@ -11,7 +11,7 @@ import "@/events/listeners/otpListener";
 initSentry();
 
 async function bootstrap() {
-  const server = await startServer();
+  const server = await startGateway();
 
   const shutdown = () => {
     logger.info("🛑 Shutting down server");
